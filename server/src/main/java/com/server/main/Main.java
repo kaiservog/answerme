@@ -1,6 +1,5 @@
 package com.server.main;
 
-import static spark.Spark.get;
 import static spark.Spark.secure;
 
 import javax.enterprise.event.Observes;
@@ -11,6 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.server.conf.Configuration;
+import com.server.http.HelloWorld;
+import com.server.http.RedisTest;
+
+import redis.clients.jedis.Jedis;
 
 public class MainTestCertificado {
 	private static final Logger logger = LoggerFactory.getLogger(MainTestCertificado.class);
@@ -24,8 +27,9 @@ public class MainTestCertificado {
 			logger.info("TLS Enabled");
 		}
 
-		get("/hello", (req, res) -> "Hello World");
-		System.out.println("teste");
-
+		Jedis jedis = new Jedis("redis", 6379);
+		
+		HelloWorld.registerResource();
+		RedisTest.registerResource(jedis);
 	}
 }
