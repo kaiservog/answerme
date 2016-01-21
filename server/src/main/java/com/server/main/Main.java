@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.server.conf.Configuration;
+import com.server.db.manage.DBTest;
 import com.server.http.HelloWorld;
 import com.server.http.RedisTest;
 
@@ -21,6 +22,8 @@ public class Main {
 
 	@Inject
 	private Configuration configuration;
+	@Inject
+	private DBTest dbtest;
 
 	public static void main(String[] args) {
 		StartMain.main(args);
@@ -30,23 +33,14 @@ public class Main {
 		if (configuration.isTLSEnabled()) {
 			secure("C:\\Users\\César\\Documents\\certs\\server.jks", "/852789@", null, null);
 			logger.info("TLS Enabled");
-			//TODO configurar saida de log
+			// TODO configurar saida de log
 		}
-		
-		Jedis jedis = new Jedis("redis", 6379);
+
+		Jedis jedis = new Jedis("192.168.0.7", 6379);
 
 		HelloWorld.registerResource();
 		RedisTest.registerResource(jedis);
 		logger.info("Main executed");
-		
-		while (true) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			logger.info("teste");
-		}
+		dbtest.test();
 	}
 }
