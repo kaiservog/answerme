@@ -32,10 +32,21 @@ public class Main {
 			logger.info("TLS Enabled");
 			//TODO configurar saida de log
 		}
-
+		
 		Jedis jedis = new Jedis("redis", 6379);
 
 		HelloWorld.registerResource();
 		RedisTest.registerResource(jedis);
+		logger.info("Main executed");
+		
+		while (true) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			logger.info("teste");
+		}
 	}
 }

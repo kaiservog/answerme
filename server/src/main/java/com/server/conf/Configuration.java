@@ -4,6 +4,6 @@ public class Configuration {
 	
 	
 	public boolean isTLSEnabled(){
-		return true;
+		return false;
 	}
 }
