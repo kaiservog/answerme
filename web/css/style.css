@@ -1,5 +1,7 @@
-body {
+
+html,body {
     background-color: #f8f8f8;
+	height:100%;
 }
 
 #wrapper {
@@ -43,28 +45,14 @@ body {
     background-color: #000000;
 }	
 
-.fa-clock-o:before {
-  content: "\f017";
-}
-
 .chat-panel .panel-body {
-    height: 80%;
-	width: 85%;
-    overflow-y: scroll;
-	position: absolute;
-	margin-top:100px;
+	overflow-y: scroll; 
 	background-color: #ffffff;
+	height:calc(100vh - 170px);
 }
 
-.trending-panel .panel-body {
-    height: 80%;
-	width: 20%;
-    overflow-y: scroll;
-	position: absolute;
-	margin-top:200px;
-	background-color: #ffffff;
-	float:right;
-}
+
+
 
 
 
