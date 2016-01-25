@@ -51,6 +51,9 @@ html,body {
 	height:calc(100vh - 170px);
 }
 
+.voffset1 { margin-top: 50px; }
+.loffset1 { margin-left: 30px; }
+
 
 
 

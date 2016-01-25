@@ -55,28 +55,48 @@
 				</div>
 			</div>
 			<div class="col-md-12">
+
 				<div class="chat-panel panel panel-default">
 					<div class="panel-body scrollable ">
 						<ul class="chat">
 							<li ng-repeat="msg in msgs" class="clearfix">
-								<span class="chat-img"><img src="{{msg.avatar}}" alt="User Avatar" class="img-circle"></span>
-								<div class="chat-body clearfix">
-									<div class="header">
-										<strong class="primary-font"> </strong> 
-										<span class="label label-warning">#{{msg.topic}}</span> 
-										<small class="pull-right text-muted"> 
-											<span class="glyphicon glyphicon-time"></span> 
-											{{msg.time}}
-										</small>
+								<div class="row">
+									<div class="col-md-12">
+										<span class="chat-img pull-left"><img src="{{msg.question.avatar}}" alt="User Avatar" class="img-circle"></span>
+										<div class="loffset1 chat-body clearfix">
+											<div class="loffset1 header">
+												<strong class="primary-font"> </strong> 
+												<span class="label label-warning">#{{msg.question.topic}}</span> 
+												<small class="pull-right text-muted"> 
+													<span class="glyphicon glyphicon-time"></span> 
+													{{msg.question.time}}
+												</small>
+											</div>
+											<p class="loffset1">{{msg.question.text}}</p>
+										</div>
 									</div>
-									<p>{{msg.text}}</p>
+							
+									<div class="col-md-12 voffset1">
+										<span class="chat-img pull-right"><img src="{{msg.answer.avatar}}" alt="User Avatar" class="img-circle"></span>
+										<div class="chat-body clearfix">
+											<div class="header">
+												<strong class="primary-font"> </strong> 
+												<span>&nbsp;</span> 
+												<small class="pull-left text-muted"> 
+													<span class="glyphicon glyphicon-time"></span> 
+													{{msg.answer.time}}
+												</small>
+											</div>
+											<p>{{msg.answer.text}}</p>
+										</div>
+									</div>
 								</div>
 							</li>
 						</ul>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-12">
+			<div class="col-md-12 text-center">
 				All rights reserved (c)
 			</div>
 		</div>
