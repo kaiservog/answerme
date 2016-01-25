@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>Bootstrap Login Form</title>
+		<meta name="generator" content="Bootply" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href="css/font-awesome.min.css" rel="stylesheet">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/social-buttons.css" rel="stylesheet">
+		<script src="js/jquery-1.12.0.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/fb.js"></script>
+		
+	</head>
+	<body>
+	<script>
+
+</script>
+<div id="loginModal" class="modal show" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+  <div class="modal-content">
+      <div class="modal-header">
+          <h1 class="text-center">#Answerme</h1>
+		  <p class="text-center"> Choose your login </p>
+      </div>
+      <div class="modal-body">
+		<ul class="list-group">
+			<li class="list-group-item">
+				<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+					<button class="btn btn-facebook text-center"><i class="fa fa-facebook"></i> | Connect with Facebook</button>
+				</fb:login-button>
+			</li>	
+			<li class="list-group-item"><button class="btn btn-google-plus text-center"><i class="fa fa-google-plus"></i> | Connect with Google Plus</button></li>
+			<li class="list-group-item"><button class="btn btn-twitter text-center"><i class="fa fa-twitter"></i> | Connect with Twitter</button></li>
+		</ul>
+
+		<div id="status">
+		</div>
+
+      </div>
+      <div class="modal-footer">
+          <div class="col-md-12">
+          
+		  </div>	
+      </div>
+  </div>
+  </div>
+</div>
+<div
+  class="fb-like"
+  data-share="true"
+  data-width="450"
+  data-show-faces="true">
+</div>
+		
+	</body>
+</html>

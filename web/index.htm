@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html ng-app='home'>
+<head>
+<title>#Answerme</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<script src="js/jquery-1.12.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/angular.min.js"></script>
+<script src="js/answeme.js"></script>
+</head>
+<body ng-controller='homeController'>
+	<div class="container-fluid special">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse"
+				data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span> <span
+					class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">#Answerme</a>
+		</div>
+		<div class="collapse navbar-collapse"
+			id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<li><a href="#"> Me <span class="badge">42</span></a></li>
+				<li><a href="#">About</a></li>
+				<li><a href="#">Trendings topics</a></li>
+				<li><a href="#">Logout</a></li>
+			</ul>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel-footer">
+					<div class="row">
+						<div class="col-md-2">
+							<div class="input-group input-group-lg">
+								<span class="input-group-addon" id="sizing-addon1">#</span> <input
+									type="text" class="form-control" placeholder="Topic"
+									aria-describedby="sizing-addon1">
+							</div>
+						</div>
+						<div class="col-md-10">
+							<div class="input-group">
+								<input id="btn-input" class="form-control input-lg"
+									placeholder="Ask your question here..." type="text"> <span
+									class="input-group-btn">
+									<button class="btn btn-info btn-lg" id="btn-chat">Send</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+
+				<div class="chat-panel panel panel-default">
+					<div class="panel-body scrollable ">
+						<ul class="chat">
+							<li ng-repeat="msg in msgs" class="clearfix">
+								<div class="row">
+									<div class="col-md-12">
+										<span class="chat-img pull-left"><img src="{{msg.question.avatar}}" alt="User Avatar" class="img-circle"></span>
+										<div class="loffset1 chat-body clearfix">
+											<div class="loffset1 header">
+												<strong class="primary-font"> </strong> 
+												<span class="label label-warning">#{{msg.question.topic}}</span> 
+												<small class="pull-right text-muted"> 
+													<span class="glyphicon glyphicon-time"></span> 
+													{{msg.question.time}}
+												</small>
+											</div>
+											<p class="loffset1">{{msg.question.text}}</p>
+										</div>
+									</div>
+							
+									<div class="col-md-12 voffset1">
+										<span class="chat-img pull-right"><img src="{{msg.answer.avatar}}" alt="User Avatar" class="img-circle"></span>
+										<div class="chat-body clearfix">
+											<div class="header">
+												<strong class="primary-font"> </strong> 
+												<span>&nbsp;</span> 
+												<small class="pull-left text-muted"> 
+													<span class="glyphicon glyphicon-time"></span> 
+													{{msg.answer.time}}
+												</small>
+											</div>
+											<p>{{msg.answer.text}}</p>
+										</div>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12 text-center">
+				All rights reserved (c)
+			</div>
+		</div>
+	</div>
+</body>
+</html>
