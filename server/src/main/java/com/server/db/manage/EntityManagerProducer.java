@@ -1,6 +1,6 @@
 package com.server.db.manage;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
@@ -10,7 +10,7 @@ import javax.persistence.Persistence;
 public class EntityManagerProducer {
 	private static EntityManagerFactory factory = Persistence.createEntityManagerFactory("default");
 
-	@Produces
+	@Produces @ApplicationScoped
 	public EntityManager createEntityManager() {
 		return factory.createEntityManager();
 	}
