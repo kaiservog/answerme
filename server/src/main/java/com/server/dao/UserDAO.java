@@ -18,7 +18,9 @@ public class UserDAO {
 	private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 
 	public void add(User user) {
+		manager.getTransaction().begin();
 		manager.persist(user);
+		manager.getTransaction().commit();
 	}
 	
 	public User findByUsername(String username) {
