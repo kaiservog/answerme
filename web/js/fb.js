@@ -19,16 +19,6 @@ window.fbAsyncInit = function() {
 	fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 
-function testAPI() {
-	console.log('Welcome!  Fetching your information.... ');
-	FB.api('/me', function(response) {
-	  console.log('Successful login for: ' + response.name);
-
-	  document.getElementById('status').innerHTML =
-		'Thanks for logging in, ' + response.name + '!';
-	});
-}
-
 function checkLoginState() {
 	FB.getLoginStatus(function(response) {
 	  statusChangeCallback(response);
@@ -40,9 +30,17 @@ function statusChangeCallback(response) {
 	console.log(response);
 
 	if (response.status === 'connected') {
-	  testAPI();
 	  console.log('Successful userId for: ' + response.authResponse.userID);
 	  console.log('Successful accessToken for: ' + response.authResponse.accessToken);
+	  var controller = $('#loginController');
+	  var account = {
+		  userID :  response.authResponse.userID,
+		  accessToken : response.authResponse.accessToken,
+		  service : 'fb'
+	  }
+	  
+	  controller.accountHolder(account);
+	  $("#home").click();
 	} else if (response.status === 'not_authorized') {
 	  document.getElementById('status').innerHTML = 'Please log ' +
 		'into this app.';

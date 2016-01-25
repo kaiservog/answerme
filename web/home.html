@@ -1,16 +1,11 @@
-<!DOCTYPE html>
-<html ng-app='home'>
-<head>
-<title>#Answerme</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
-<script src="js/jquery-1.12.0.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/angular.min.js"></script>
-<script src="js/answeme.js"></script>
-</head>
-<body ng-controller='homeController'>
+<div>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+	
+	<script src="js/jquery-1.12.0.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/angular.min.js"></script>
+	<script src="js/answeme.js"></script>
 	<div class="container-fluid special">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse"
@@ -29,6 +24,7 @@
 				<li><a href="#">Trendings topics</a></li>
 				<li><a href="#">Logout</a></li>
 			</ul>
+			{{accountHolder.userID}}
 		</div>
 
 		<div class="row">
@@ -101,5 +97,4 @@
 			</div>
 		</div>
 	</div>
-</body>
-</html>
+</div>

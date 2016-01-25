@@ -31,7 +31,7 @@ public class Main {
 
 	public void main(@Observes ContainerInitialized event) {
 		if (configuration.isTLSEnabled()) {
-			secure("C:\\Users\\César\\Documents\\certs\\server.jks", "/852789@", null, null);
+			secure("/apl/server.jks", "/852789@", null, null);
 			logger.info("TLS Enabled");
 			// TODO configurar saida de log
 		}
