@@ -11,9 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.server.conf.Configuration;
-import com.server.db.manage.DBTest;
+import com.server.controller.UserController;
 import com.server.http.HelloWorld;
 import com.server.http.RedisTest;
+import com.server.http.UserResource;
 
 import redis.clients.jedis.Jedis;
 
@@ -23,7 +24,7 @@ public class Main {
 	@Inject
 	private Configuration configuration;
 	@Inject
-	private DBTest dbtest;
+	private UserController userController;
 
 	public static void main(String[] args) {
 		StartMain.main(args);
@@ -31,7 +32,7 @@ public class Main {
 
 	public void main(@Observes ContainerInitialized event) {
 		if (configuration.isTLSEnabled()) {
-			secure("C:\\Users\\César\\Documents\\certs\\server.jks", "/852789@", null, null);
+			secure("C:\\Users\\Cï¿½sar\\Documents\\certs\\server.jks", "/852789@", null, null);
 			logger.info("TLS Enabled");
 			// TODO configurar saida de log
 		}
@@ -40,7 +41,7 @@ public class Main {
 
 		HelloWorld.registerResource();
 		RedisTest.registerResource(jedis);
+		UserResource.registerResource(userController);
 		logger.info("Main executed");
-		dbtest.test();
 	}
 }
