@@ -2,6 +2,8 @@ package com.server.main;
 
 import static spark.Spark.secure;
 
+import java.io.IOException;
+
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -22,22 +24,21 @@ public class Main {
 	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 	@Inject
-	private Configuration configuration;
-	@Inject
 	private UserController userController;
 
 	public static void main(String[] args) {
 		StartMain.main(args);
 	}
 
-	public void main(@Observes ContainerInitialized event) {
-		if (configuration.isTLSEnabled()) {
-			secure("/apl/server.jks", "/852789@", null, null);
-			logger.info("TLS Enabled");
-			// TODO configurar saida de log
+	public void main(@Observes ContainerInitialized event) throws IOException {
+		Configuration.load();
+		
+		if (Configuration.isSecureEnabled()) {
+			secure(Configuration.getKeyStorePath(), Configuration.getKeyStorePass(), null, null);
+			logger.info("Secure enabled");
 		}
 
-		Jedis jedis = new Jedis("192.168.0.7", 6379);
+		Jedis jedis = new Jedis(Configuration.getCacheAddress(), Configuration.getCachePort());
 
 		HelloWorld.registerResource();
 		RedisTest.registerResource(jedis);
