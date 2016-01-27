@@ -38,26 +38,18 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 		if (response.status === 'connected') {
 		  console.log('Successful userId for: ' + response.authResponse.userID);
 		  console.log('Successful accessToken for: ' + response.authResponse.accessToken);
-		  
-		
-			
+
 		  var account = {
 			  userID :  response.authResponse.userID,
 			  accessToken : response.authResponse.accessToken,
 			  service : 'fb'
 		  }
-		  
-		FB.api('/me', function(response) {
+		  FB.api('/me', function(response) {
 			account.name = response.name 
-		});
-		  
+			});
 		  accountService.set(account);
 		  $location.path("/home");
 		  $scope.$apply();
-		} else if (response.status === 'not_authorized') {
-		  document.getElementById('status').innerHTML = 'Please log into this app.';
-		} else {
-		  document.getElementById('status').innerHTML = 'Please log into Facebook.';
 		}
 	}
 	
@@ -67,6 +59,10 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 		});
 	}
 	
+	$scope.fb_login = function() {
+		FB.login( function() {}, { scope: 'email,public_profile' } );
+	}
+
 	window.fbAsyncInit = function() {
 	  FB.init({
 		appId      : '1682532568656067',
@@ -87,6 +83,32 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 		js.src = "//connect.facebook.net/en_US/sdk.js";
 		fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));
+	
+	//google
+	
+	  $scope.googleUser = {};
+	  $scope.startApp = function() {
+		gapi.load('auth2', function(){
+			auth2 = gapi.auth2.init({
+			client_id: '374086716369-10kasah024t0g0a1e8nae2e1sb7jf2ua.apps.googleusercontent.com',
+			cookiepolicy: 'single_host_origin',
+		  });
+		  $scope.attachSignin(document.getElementById('googleb'));
+		});
+	  };
+	  
+	$scope.attachSignin = function(element) {
+		auth2.attachClickHandler(element, {}, function(googleUser) {
+			console.log(googleUser);
+				var account = {
+				  userID :  'teste',
+				  accessToken : 'teste',
+				  service : 'gp'
+				}
+			}
+		, undefined);
+	}
+	$scope.startApp();
 }])
 .controller('MainCtrl', ['$route', '$routeParams', '$location', function($route, $routeParams, $location) {
     this.$route = $route;

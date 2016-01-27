@@ -8,17 +8,14 @@
 	<div class="modal-body">
 		<ul class="list-group">
 			<li class="list-group-item">
-				<fb:login-button scope="public_profile,email">
-					<button class="btn btn-facebook text-center"><i class="fa fa-facebook"></i> | Connect with Facebook</button>
-				</fb:login-button>
+				<button class="btn btn-facebook text-center" ng-click="fb_login()"><i class="fa fa-facebook"></i> | Connect with Facebook</button>
 			</li>
-			<li class="list-group-item"><button class="btn btn-google-plus text-center"><i class="fa fa-google-plus"></i> | Connect with Google Plus</button></li>
+			<li class="list-group-item">
+				<button class="btn btn-google-plus text-center" id="googleb"><i class="fa fa-google-plus"></i> | Connect with Google Plus</button>
+			</li>
 			<li class="list-group-item"><button class="btn btn-twitter text-center"><i class="fa fa-twitter"></i> | Connect with Twitter</button></li>
 		</ul>
 		<a href="home" id="home"></a>
-		<div id="status">
-		</div>
-
 	</div>
 	<div class="modal-footer">
 	</div>
