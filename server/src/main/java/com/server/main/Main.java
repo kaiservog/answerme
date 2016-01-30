@@ -16,6 +16,7 @@ import com.server.conf.Configuration;
 import com.server.controller.UserController;
 import com.server.http.HelloWorld;
 import com.server.http.RedisTest;
+import com.server.http.SparkFilter;
 import com.server.http.UserResource;
 
 import redis.clients.jedis.Jedis;
@@ -41,6 +42,7 @@ public class Main {
 		Jedis jedis = new Jedis(Configuration.getCacheAddress(), Configuration.getCachePort());
 
 		HelloWorld.registerResource();
+		SparkFilter.registerResource();
 		RedisTest.registerResource(jedis);
 		UserResource.registerResource(userController);
 		logger.info("Main executed");

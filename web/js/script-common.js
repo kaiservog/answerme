@@ -30,23 +30,44 @@ answermeApp.config(function($routeProvider, $locationProvider) {
 	});
 });
 
-answermeApp.controller('loginController', ['$scope', 'accountService', '$location', function($scope, accountService, $location) {
+answermeApp.controller('loginController', ['$scope', 'accountService', '$location', '$http', function($scope, accountService, $location, $http) {
+	function createAccount(name, userId, token, service, client) {
+		return {
+			name: name,
+			userId: userId,
+			token: token,
+			service: service,
+			client: client
+		}
+	}
+	function callbackStatus(response) {console.log(response)}
+
+	function signin(account) {
+		$http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+		$http.defaults.headers.common['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, DELETE';
+		$http.defaults.headers.common['Access-Control-Max-Age'] = '3600';
+		$http.defaults.headers.common['Access-Control-Allow-Headers'] = 'x-requested-with';
+		
+		$http.defaults.headers.post['dataType'] = 'json'
+
+		$http({
+		  	method: 'POST',
+		  	headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+		  	url: 'https://localhost:4567/user/check',
+		  	dataType: 'json',
+		  	data: {request: account}
+		  }).then(callbackStatus, callbackStatus);
+	}
+
 	$scope.statusChangeCallback = function (response) {
-		console.log('statusChangeCallback');
-		console.log(response);
-
 		if (response.status === 'connected') {
-		  console.log('Successful userId for: ' + response.authResponse.userID);
-		  console.log('Successful accessToken for: ' + response.authResponse.accessToken);
+		  var name = '';
+		  var account = createAccount(undefined, response.authResponse.userID, response.authResponse.accessToken, 'fb', 'web');
 
-		  var account = {
-			  userID :  response.authResponse.userID,
-			  accessToken : response.authResponse.accessToken,
-			  service : 'fb'
-		  }
 		  FB.api('/me', function(response) {
 			account.name = response.name 
 			});
+
 		  accountService.set(account);
 		  $location.path("/home");
 		  $scope.$apply();
@@ -99,15 +120,13 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 	  
 	$scope.attachSignin = function(element) {
 		auth2.attachClickHandler(element, {}, function(googleUser) {
-			console.log(googleUser);
-				var account = {
-				  userID :  'teste',
-				  accessToken : 'teste',
-				  service : 'gp'
-				}
-			}
-		, undefined);
+			var id_token = googleUser.getAuthResponse().id_token;
+			var profile = googleUser.getBasicProfile();
+			var account = createAccount(profile.getName(), profile.getId(), id_token, 'gp', 'web');
+			signin(account);
+		});
 	}
+
 	$scope.startApp();
 }])
 .controller('MainCtrl', ['$route', '$routeParams', '$location', function($route, $routeParams, $location) {
@@ -117,126 +136,5 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 }])
 .controller('homeController', ['$scope', 'accountService', function($scope, accountService) {
 	$scope.accountHolder = accountService.get()
-	$scope.msgs = [
-		{
-			question: {
-				topic: 'Java',
-				text: 'How to create classpath for maven?',
-				time: '15 mins ago',
-				avatar: 'http://placehold.it/50/55C1E7/fff'
-			},
-			answer: {
-				text: 'try MVN_HOME on control panel > add envirement variable',
-				time: '10 mins ago',
-				avatar: 'http://placehold.it/50/FA6F57/fff',
-				status: 'Approved'
-			}
-			
-		},
-		{
-			question: {
-				topic: 'Java',
-				text: 'How to create classpath for maven?',
-				time: '15 mins ago',
-				avatar: 'http://placehold.it/50/55C1E7/fff'
-			},
-			answer: {
-				text: 'try MVN_HOME on control panel > add envirement variable',
-				time: '10 mins ago',
-				avatar: 'http://placehold.it/50/FA6F57/fff',
-				status: 'Approved'
-			}
-			
-		},
-		{
-			question: {
-				topic: 'Java',
-				text: 'How to create classpath for maven?',
-				time: '15 mins ago',
-				avatar: 'http://placehold.it/50/55C1E7/fff'
-			},
-			answer: {
-				text: 'try MVN_HOME on control panel > add envirement variable',
-				time: '10 mins ago',
-				avatar: 'http://placehold.it/50/FA6F57/fff',
-				status: 'Approved'
-			}
-			
-		},
-		{
-			question: {
-				topic: 'Java',
-				text: 'How to create classpath for maven?',
-				time: '15 mins ago',
-				avatar: 'http://placehold.it/50/55C1E7/fff'
-			},
-			answer: {
-				text: 'try MVN_HOME on control panel > add envirement variable',
-				time: '10 mins ago',
-				avatar: 'http://placehold.it/50/FA6F57/fff',
-				status: 'Approved'
-			}
-			
-		},
-		{
-			question: {
-				topic: 'Java',
-				text: 'How to create classpath for maven?',
-				time: '15 mins ago',
-				avatar: 'http://placehold.it/50/55C1E7/fff'
-			},
-			answer: {
-				text: 'try MVN_HOME on control panel > add envirement variable',
-				time: '10 mins ago',
-				avatar: 'http://placehold.it/50/FA6F57/fff',
-				status: 'Approved'
-			}
-			
-		},
-		{
-			question: {
-				topic: 'Java',
-				text: 'How to create classpath for maven?',
-				time: '15 mins ago',
-				avatar: 'http://placehold.it/50/55C1E7/fff'
-			},
-			answer: {
-				text: 'try MVN_HOME on control panel > add envirement variable',
-				time: '10 mins ago',
-				avatar: 'http://placehold.it/50/FA6F57/fff',
-				status: 'Approved'
-			}
-			
-		},
-		{
-			question: {
-				topic: 'Java',
-				text: 'How to create classpath for maven?',
-				time: '15 mins ago',
-				avatar: 'http://placehold.it/50/55C1E7/fff'
-			},
-			answer: {
-				text: 'try MVN_HOME on control panel > add envirement variable',
-				time: '10 mins ago',
-				avatar: 'http://placehold.it/50/FA6F57/fff',
-				status: 'Approved'
-			}
-			
-		},
-		{
-			question: {
-				topic: 'Java',
-				text: 'How to create classpath for maven?',
-				time: '15 mins ago',
-				avatar: 'http://placehold.it/50/55C1E7/fff'
-			},
-			answer: {
-				text: 'try MVN_HOME on control panel > add envirement variable',
-				time: '10 mins ago',
-				avatar: 'http://placehold.it/50/FA6F57/fff',
-				status: 'Approved'
-			}
-			
-		}
-	];
+	$scope.msgs = [];
 }]);

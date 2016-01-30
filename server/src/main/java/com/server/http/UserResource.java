@@ -59,5 +59,30 @@ public class UserResource {
 			jsonResponse.put("response", jsonResponseMessage);
 			return jsonResponse;
 		});
+		
+		post("/user/check", (request, response) -> {
+			response.type("application/json");
+			JSONObject jsonResponse = new JSONObject();
+			JSONObject jsonResponseMessage = new JSONObject();
+			try {
+				JSONObject obj = new JSONObject(request.body());
+				JSONObject jsonRequest = obj.getJSONObject("request");
+				
+				String name = jsonRequest.getString("name");
+				String userId = jsonRequest.getString("userId");
+				String token = jsonRequest.getString("token");
+				String service = jsonRequest.getString("service");
+				String client = jsonRequest.getString("client");
+
+				logger.info("check user: " + name + " userId: " + userId + " token: " + token + " service " + service + " client " + client);
+				jsonResponseMessage.put("message", "ok");
+
+			} catch (Exception e) {
+				logger.error("Error in request /add", e);
+				jsonResponseMessage.put("message", "error");
+			}
+			jsonResponse.put("response", jsonResponseMessage);
+			return jsonResponse;
+		});
 	}
 }
