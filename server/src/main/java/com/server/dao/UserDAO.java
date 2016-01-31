@@ -19,8 +19,13 @@ public class UserDAO {
 
 	public void add(User user) {
 		manager.getTransaction().begin();
-		manager.persist(user);
-		manager.getTransaction().commit();
+		try {
+			manager.persist(user);
+			manager.getTransaction().commit();
+		} catch (Exception e) {
+			logger.error("Error inserting username: " + user.getUsername());
+			manager.getTransaction().rollback();
+		}
 	}
 	
 	public User findByUsername(String username) {

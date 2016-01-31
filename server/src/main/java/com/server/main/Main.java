@@ -13,13 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.server.conf.Configuration;
-import com.server.controller.UserController;
 import com.server.http.HelloWorld;
+import com.server.http.QuestionResource;
 import com.server.http.RedisTest;
 import com.server.http.SparkFilter;
 import com.server.http.UserResource;
-
-import redis.clients.jedis.Jedis;
 
 public class Main {
 	private static final Logger logger = LoggerFactory.getLogger(Main.class);
@@ -28,6 +26,8 @@ public class Main {
 	private UserResource userResource;
 	@Inject
 	private RedisTest redistTest;
+	@Inject
+	private QuestionResource questionResource;
 	@Inject
 	private Configuration configuration;
 
@@ -53,5 +53,6 @@ public class Main {
 		SparkFilter.registerResource();
 		userResource.registerResource();
 		redistTest.registerResource();
+		questionResource.registerResource();
 	}
 }
