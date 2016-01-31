@@ -9,6 +9,7 @@ import java.util.Properties;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -23,6 +24,9 @@ public class EntityManagerProducer {
 	private Properties properties;
 	private EntityManagerFactory factory;
 	
+	@Inject
+	private Configuration configuration;
+	
 	@Produces
 	@ApplicationScoped
 	public EntityManager createEntityManager() {
@@ -34,7 +38,7 @@ public class EntityManagerProducer {
 	private void loadProperties() {
 		try {
 			properties = new Properties();
-			Path file = Paths.get(Configuration.getStoredConfPath());
+			Path file = Paths.get(configuration.getStoredConfPath());
 			final InputStream jpaFileInput = Files.newInputStream(file);
 			properties.load(jpaFileInput);
 		} catch (Exception e) {

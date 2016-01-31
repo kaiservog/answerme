@@ -47,7 +47,7 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 		$http.defaults.headers.common['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, DELETE';
 		$http.defaults.headers.common['Access-Control-Max-Age'] = '3600';
 		$http.defaults.headers.common['Access-Control-Allow-Headers'] = 'x-requested-with';
-		
+
 		$http.defaults.headers.post['dataType'] = 'json'
 
 		$http({
@@ -120,8 +120,11 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 	  
 	$scope.attachSignin = function(element) {
 		auth2.attachClickHandler(element, {}, function(googleUser) {
+			console.log(googleUser);
+
 			var id_token = googleUser.getAuthResponse().id_token;
 			var profile = googleUser.getBasicProfile();
+			console.log(profile.getId());
 			var account = createAccount(profile.getName(), profile.getId(), id_token, 'gp', 'web');
 			signin(account);
 		});

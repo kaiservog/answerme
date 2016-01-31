@@ -25,26 +25,33 @@ public class Main {
 	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 	@Inject
-	private UserController userController;
+	private UserResource userResource;
+	@Inject
+	private RedisTest redistTest;
+	@Inject
+	private Configuration configuration;
 
 	public static void main(String[] args) {
 		StartMain.main(args);
 	}
 
 	public void main(@Observes ContainerInitialized event) throws IOException {
-		Configuration.load();
-		
-		if (Configuration.isSecureEnabled()) {
-			secure(Configuration.getKeyStorePath(), Configuration.getKeyStorePass(), null, null);
+		configuration.load();
+
+		if (configuration.isSecureEnabled()) {
+			secure(configuration.getKeyStorePath(), configuration.getKeyStorePass(), null, null);
 			logger.info("Secure enabled");
 		}
 
-		Jedis jedis = new Jedis(Configuration.getCacheAddress(), Configuration.getCachePort());
+		registerResources();
 
+		logger.info("Main executed");
+	}
+
+	private void registerResources() {
 		HelloWorld.registerResource();
 		SparkFilter.registerResource();
-		RedisTest.registerResource(jedis);
-		UserResource.registerResource(userController);
-		logger.info("Main executed");
+		userResource.registerResource();
+		redistTest.registerResource();
 	}
 }

@@ -3,6 +3,8 @@ package com.server.http;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
+import javax.inject.Inject;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +18,13 @@ public class UserResource {
 	private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
 
 	private static final Gson gson = new Gson();
-
-	public static void registerResource(UserController userController) {
+	
+	@Inject
+	private TokenValidatorFactory tokenValidatorFactory;
+	@Inject
+	private UserController userController;
+	
+	public void registerResource() {
 		post("/user/add", (request, response) -> {
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
@@ -75,7 +82,13 @@ public class UserResource {
 				String client = jsonRequest.getString("client");
 
 				logger.info("check user: " + name + " userId: " + userId + " token: " + token + " service " + service + " client " + client);
-				jsonResponseMessage.put("message", "ok");
+				
+				if(tokenValidatorFactory.get(service, token, userId).validate()) {
+					//verificar se usuário ja existe ou não
+					jsonResponseMessage.put("message", "ok");
+				}else {
+					jsonResponseMessage.put("message", "error");
+				}
 
 			} catch (Exception e) {
 				logger.error("Error in request /add", e);
