@@ -11,32 +11,32 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "topic")
-@SequenceGenerator(name = "topic_seq", sequenceName = "topic_id_seq", allocationSize = 1)
-public class Topic implements Serializable {
-	private static final long serialVersionUID = 6911000237717989580L;
+@Table(name = "tag")
+@SequenceGenerator(name = "tag_seq", sequenceName = "tag_id_seq", allocationSize = 1)
+public class Tag implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "topic_seq")
-	@Column(name = "id_topic", unique = true, insertable = false, updatable = false)
-	private long id;
-
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "tag_seq")
+	@Column(name = "id_tag", unique = true, insertable = false, updatable = false)
+	private int id;
 	@Column(name = "name")
 	private String name;
-
-	public Topic() {
+	
+	public Tag() {
 	}
-
-	public Topic(String name) {
+	
+	public Tag(String name) {
 		super();
 		this.name = name;
 	}
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -47,5 +47,4 @@ public class Topic implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 }

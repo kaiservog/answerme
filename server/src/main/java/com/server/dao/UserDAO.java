@@ -19,22 +19,27 @@ public class UserDAO extends Dao {
 
 	public User add(User user) {
 		manager.getTransaction().begin();
-		manager.persist(user);
-		manager.getTransaction().commit();
+		try {
+			manager.persist(user);
+			manager.getTransaction().commit();
+		} catch (Exception e) {
+			logger.error("Error inserting userid: " + user.getUserId());
+			manager.getTransaction().rollback();
+		}
 		return user;
 	}
 	
-	public User findByUsername(String username) {
+	public User findByUserId(String userId) {
 		User user = null;
 		try {
-			Query query = manager.createQuery("from User where username = :username");
-			query.setParameter("username", username);
+			Query query = manager.createQuery("from User where userid = :userid");
+			query.setParameter("userid", userId);
 			
 			user = (User) query.getSingleResult();
 		} catch (NoResultException e) {
-			logger.error("Error returning username: " + username);
+			logger.error("Error returning userid: " + userId);
 		} catch (Exception e) {
-			logger.error("Error returning username: " + username, e);
+			logger.error("Error returning userid: " + userId, e);
 		}
 		
 		return user;
