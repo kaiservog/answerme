@@ -2,8 +2,6 @@
   <persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
   	<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<class>com.server.model.User</class>
-		<class>com.server.model.Tag</class>
-		<class>com.server.model.UserTag</class>
 		<class>com.server.model.Question</class>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>

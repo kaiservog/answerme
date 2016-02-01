@@ -17,7 +17,6 @@ import com.server.controller.QuestionController;
 import com.server.controller.TopicController;
 import com.server.controller.UserController;
 import com.server.model.Question;
-import com.server.model.Tag;
 import com.server.model.Topic;
 import com.server.model.User;
 
@@ -53,11 +52,11 @@ public class QuestionResource {
 				JSONObject jsonRequest = obj.getJSONObject("request");
 				String queristString = jsonRequest.getString("querist");
 				String questionString = jsonRequest.getString("question");
-				String tagString = jsonRequest.getString("tag");
+				String topicString = jsonRequest.getString("topic");
 				
-				Topic topic = topicController.findByName(tagString);
+				Topic topic = topicController.findByName(topicString);
 				if (topic == null) {
-					topic = new Topic(tagString);
+					topic = new Topic(topicString);
 					topicController.add(topic);
 				}
 				User querist = userController.get(queristString);
@@ -77,15 +76,15 @@ public class QuestionResource {
 			return jsonResponse;
 		});
 		
-		get("/question/find/:responder/:tag", (request, response) -> {
+		get("/question/find/:responder/:topic", (request, response) -> {
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();
 			try {
 				String responderString = request.params(":responder");
-				String tagString = request.params(":tag");
+				String topicString = request.params(":topic");
 				
-				String questionId = jedis.rpop(tagString);
+				String questionId = jedis.rpop(topicString);
 				if (questionId != null) {
 					Question question = questionController.find(Integer.valueOf(questionId));
 					question.setResponder(userController.get(responderString));

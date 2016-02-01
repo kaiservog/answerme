@@ -14,13 +14,13 @@ import com.server.model.Topic;
 public class TopicDAO extends Dao {
 	private static final Logger logger = LoggerFactory.getLogger(TopicDAO.class);
 
-	public void add(Topic tag) {
+	public void add(Topic topic) {
 		getManager().getTransaction().begin();
 		try {
-			getManager().persist(tag);
+			getManager().persist(topic);
 			getManager().getTransaction().commit();
 		} catch (Exception e) {
-			logger.error("Error inserting tagname: " + tag.getName());
+			logger.error("Error inserting topicName: " + topic.getName());
 			getManager().getTransaction().rollback();
 		}
 	}
