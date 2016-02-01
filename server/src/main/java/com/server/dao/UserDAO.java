@@ -1,31 +1,24 @@
 package com.server.dao;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.server.db.TransactionRequired;
 import com.server.model.User;
 
-
-public class UserDAO extends Dao {
-	@Inject
-	private EntityManager manager;
-	
+public class UserDAO extends Dao<User> {
 	private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 
+	@TransactionRequired
 	public User add(User user) {
-		manager.getTransaction().begin();
-		
 		try {
-			manager.persist(user);
-			manager.getTransaction().commit();
+			getManager().persist(user);
 		} catch (Exception e) {
 			logger.error("Error inserting userid: " + user.getUserId());
-			manager.getTransaction().rollback();
+			throw e;
 		}
 		return user;
 	}
@@ -33,7 +26,7 @@ public class UserDAO extends Dao {
 	public User findByUserId(String userId) {
 		User user = null;
 		try {
-			Query query = manager.createQuery("from User where userid = :userid");
+			Query query = getManager().createQuery("from User where userid = :userid");
 			query.setParameter("userid", userId);
 			
 			user = (User) query.getSingleResult();
@@ -49,7 +42,7 @@ public class UserDAO extends Dao {
 	public User findByUserId(String userId, String loginService) {
 		User user = null;
 		try {
-			Query query = manager.createQuery("from User where userid = :userId and loginservice = :loginservice");
+			Query query = getManager().createQuery("from User where userid = :userId and loginservice = :loginservice");
 			query.setParameter("userId", userId);
 			query.setParameter("loginservice", loginService);
 			

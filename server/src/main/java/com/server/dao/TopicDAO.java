@@ -9,13 +9,14 @@ import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.server.db.TransactionRequired;
 import com.server.model.Topic;
 
-public class TopicDAO extends Dao {
+public class TopicDAO extends Dao<Topic> {
 	private static final Logger logger = LoggerFactory.getLogger(TopicDAO.class);
 
+	@TransactionRequired
 	public void add(Topic topic) {
-		getManager().getTransaction().begin();
 		try {
 			getManager().persist(topic);
 			getManager().getTransaction().commit();
@@ -32,9 +33,9 @@ public class TopicDAO extends Dao {
 		return query.getResultList();
 	}
 
+	@TransactionRequired
 	public List<Topic> findOrPersist(List<String> stringTopics) {
 		List<Topic> result = new ArrayList<Topic>();
-		getManager().getTransaction().begin();
 		
 		for (String stringTopic : stringTopics) {
 			TypedQuery<Topic> query = getManager().createQuery("from Topic where name = :name", Topic.class);
@@ -49,7 +50,6 @@ public class TopicDAO extends Dao {
 
 			result.add(topic);
 		}
-		getManager().getTransaction().commit();
 		return result;
 	}
 	

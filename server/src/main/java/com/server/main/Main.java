@@ -33,11 +33,12 @@ public class Main {
 	@Inject
 	private Configuration configuration;
 
-	public static void main(String[] args) {
-		new Weld().initialize();
+	public static void main(String[] args) throws IOException {
+		WeldContainer container = new Weld().initialize();
+		container.instance().select(Main.class).get().execute();
 	}
 
-	public void main(@Observes ContainerInitialized event) throws IOException {
+	public void execute() throws IOException {
 		configuration.load();
 		
 		if (configuration.isSecureEnabled()) {
