@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -28,7 +29,7 @@ public class EntityManagerProducer {
 	private Configuration configuration;
 	
 	@Produces
-	@ApplicationScoped
+	@RequestScoped
 	public EntityManager createEntityManager() {
 		if (properties == null) loadProperties();
 		if (factory == null) factory = Persistence.createEntityManagerFactory("default", properties);

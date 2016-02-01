@@ -8,6 +8,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.weld.environment.se.StartMain;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +34,12 @@ public class Main {
 	private Configuration configuration;
 
 	public static void main(String[] args) {
-		StartMain.main(args);
+		new Weld().initialize();
 	}
 
 	public void main(@Observes ContainerInitialized event) throws IOException {
 		configuration.load();
-
+		
 		if (configuration.isSecureEnabled()) {
 			secure(configuration.getKeyStorePath(), configuration.getKeyStorePass(), null, null);
 			logger.info("Secure enabled");

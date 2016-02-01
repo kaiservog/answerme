@@ -8,6 +8,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.jboss.weld.context.RequestContext;
+import org.jboss.weld.context.unbound.UnboundLiteral;
+import org.jboss.weld.environment.se.WeldContainer;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +21,13 @@ import com.server.controller.UserController;
 import com.server.model.Topic;
 import com.server.model.User;
 
-public class UserResource {
+public class UserResource extends Resource {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
 
 	private static final Gson gson = new Gson();
 	
+
 	@Inject
 	private TokenValidatorFactory tokenValidatorFactory;
 	@Inject
@@ -33,6 +37,7 @@ public class UserResource {
 	
 	public void registerResource() {
 		post("/user/update", (request, response) -> {
+			startResquestScope();
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();
@@ -80,6 +85,7 @@ public class UserResource {
 		});
 		
 		post("/user/check", (request, response) -> {
+			startResquestScope();
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();

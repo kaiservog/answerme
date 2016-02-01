@@ -19,6 +19,7 @@ public class UserDAO extends Dao {
 
 	public User add(User user) {
 		manager.getTransaction().begin();
+		
 		try {
 			manager.persist(user);
 			manager.getTransaction().commit();
