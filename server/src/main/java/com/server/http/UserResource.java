@@ -3,6 +3,9 @@ package com.server.http;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.json.JSONObject;
@@ -10,7 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.server.controller.TopicController;
 import com.server.controller.UserController;
+import com.server.model.Topic;
 import com.server.model.User;
 
 public class UserResource {
@@ -23,22 +28,29 @@ public class UserResource {
 	private TokenValidatorFactory tokenValidatorFactory;
 	@Inject
 	private UserController userController;
+	@Inject
+	private TopicController topicController;
 	
 	public void registerResource() {
-		post("/user/add", (request, response) -> {
+		post("/user/update", (request, response) -> {
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				String firstName = jsonRequest.getString("firstName");
-				String lastName = jsonRequest.getString("lastName");
-				String phone = jsonRequest.getString("phone");
-				String username = jsonRequest.getString("username");
-				String password = jsonRequest.getString("password");
-
-				userController.add(new User(firstName, lastName, phone, username, password));
+				
+				String userId = jsonRequest.getString("userId");
+				String loginService = jsonRequest.getString("service");
+				String topicsRaw = jsonRequest.getString("topics");
+				
+				User user = userController.getByUserId(userId, loginService);
+				List<String> topicsList = Arrays.asList(topicsRaw.split(" "));
+				List<Topic> topics = topicController.findOrPersist(topicsList);
+				
+				user.setTopics(topics);
+				userController.persist(user);
+				
 				jsonResponseMessage.put("message", "ok");
 
 			} catch (Exception e) {
@@ -84,8 +96,13 @@ public class UserResource {
 				logger.info("check user: " + name + " userId: " + userId + " token: " + token + " service " + service + " client " + client);
 				
 				if(tokenValidatorFactory.get(service, token, userId).validate()) {
-					//verificar se usuário ja existe ou não
-					jsonResponseMessage.put("message", "ok");
+					User user = userController.getByUserId(userId, service);
+					if(user != null) {
+						jsonResponseMessage.put("message", "ok");
+					}else {
+						user = userController.add(new User(userId, service, name));
+						jsonResponseMessage.put("message", "firstlogin");
+					}
 				}else {
 					jsonResponseMessage.put("message", "error");
 				}

@@ -11,16 +11,17 @@ import org.slf4j.LoggerFactory;
 import com.server.model.User;
 
 
-public class UserDAO {
+public class UserDAO extends Dao {
 	@Inject
 	private EntityManager manager;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 
-	public void add(User user) {
+	public User add(User user) {
 		manager.getTransaction().begin();
 		manager.persist(user);
 		manager.getTransaction().commit();
+		return user;
 	}
 	
 	public User findByUsername(String username) {
@@ -34,6 +35,23 @@ public class UserDAO {
 			logger.error("Error returning username: " + username);
 		} catch (Exception e) {
 			logger.error("Error returning username: " + username, e);
+		}
+		
+		return user;
+	}
+	
+	public User findByUserId(String userId, String loginService) {
+		User user = null;
+		try {
+			Query query = manager.createQuery("from User where userid = :userId and loginservice = :loginservice");
+			query.setParameter("userId", userId);
+			query.setParameter("loginservice", loginService);
+			
+			user = (User) query.getSingleResult();
+		} catch (NoResultException e) {
+			logger.error("Error returning userId: " + userId);
+		} catch (Exception e) {
+			logger.error("Error returning userId: " + userId, e);
 		}
 		
 		return user;

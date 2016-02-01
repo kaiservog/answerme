@@ -25,6 +25,9 @@ answermeApp.config(function($routeProvider, $locationProvider) {
 	}).when('/login', {
 		controller: 'loginController',
 		templateUrl: 'login.html'
+	}).when('/signup', {
+		controller: 'signupController',
+		templateUrl: 'signup.html'
 	}).otherwise({
 		redirectTo: '/login'
 	});
@@ -40,7 +43,9 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 			client: client
 		}
 	}
-	function callbackStatus(response) {console.log(response)}
+	function callbackStatus(response) {
+		console.log(response)
+	}
 
 	function signin(account) {
 		$http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
@@ -56,8 +61,18 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 		  	url: 'https://localhost:4567/user/check',
 		  	dataType: 'json',
 		  	data: {request: account}
-		  }).then(callbackStatus, callbackStatus);
+		  }).then(function(response) {
+		  	console.log(response.data.response)
+		  	if(response.data.response.message == 'ok') 
+		  		$location.path("/home");
+		  	if(response.data.response.message == 'firstlogin') 
+		  		$location.path("/signup");
+		  	
+		  	}, 
+		  	callbackStatus);
 	}
+
+
 
 	$scope.statusChangeCallback = function (response) {
 		if (response.status === 'connected') {
@@ -126,6 +141,7 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 			var profile = googleUser.getBasicProfile();
 			console.log(profile.getId());
 			var account = createAccount(profile.getName(), profile.getId(), id_token, 'gp', 'web');
+			accountService.set(account);
 			signin(account);
 		});
 	}
@@ -140,4 +156,80 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 .controller('homeController', ['$scope', 'accountService', function($scope, accountService) {
 	$scope.accountHolder = accountService.get()
 	$scope.msgs = [];
+}])
+.controller('signupController', ['$scope', '$http', '$location', 'accountService', function($scope, $http, $location, accountService) {
+	$scope.apply = function () {
+		var topics = $('#topics').val();
+
+		var request = {
+			userId: accountService.get().userId,
+			service: accountService.get().service,
+			topics: topics
+		}
+
+		$http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+		$http.defaults.headers.common['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, DELETE';
+		$http.defaults.headers.common['Access-Control-Max-Age'] = '3600';
+		$http.defaults.headers.common['Access-Control-Allow-Headers'] = 'x-requested-with';
+
+		$http.defaults.headers.post['dataType'] = 'json'
+
+		$http({
+		  	method: 'POST',
+		  	headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+		  	url: 'https://localhost:4567/user/update',
+		  	dataType: 'json',
+		  	data: {request: request}
+		  }).then(function(response) {
+		  	if(response.data.response.message=='ok') $location.path("/home");
+		  	}, function(response){console.log(response)});
+	}
+
+	$scope.workTopics = function (field) {
+		var val = $('#topics').val();
+
+		$scope.topics = splitTopics(val).map(mapTopics);
+	}
+
+	function mapTopics(element ) {
+		var letter = element.charAt(0);
+		color = colorTable[letter.toLowerCase()];
+		if(color == undefined) color = 'default';
+		var cElement =  element.charAt(0).toUpperCase() + element.slice(1);
+		return { text: cElement, color: color};
+	}
+
+	function splitTopics(rawTopics) {
+		var okRawTopics = rawTopics.replace("  ", " ");
+		var topics = okRawTopics.split(" ");
+		return topics;
+	}
+
+	var colorTable = {
+		a: 'default',
+		b: 'primary',
+		c: 'success',
+		d: 'info',
+		e: 'warning',
+		f: 'danger',
+		g: 'default',
+		h: 'primary',
+		i: 'success',
+		j: 'info',
+		k: 'warning',
+		l: 'danger',
+		m: 'warning',
+		n: 'primary',
+		o: 'success',
+		p: 'info',
+		q: 'danger',
+		r: 'info',
+		s: 'info',
+		t: 'danger',
+		u: 'success',
+		w: 'primary',
+		x: 'primary',
+		y: 'success',
+		z: 'info'
+	}
 }]);

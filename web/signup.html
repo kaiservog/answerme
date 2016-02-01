@@ -1,0 +1,20 @@
+<div class="container ">
+	<div class="panel panel-default top5">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">Write some topics that you have some knowlegde</h3>
+	  </div>
+	  <div class="panel-body top5">
+	  	First time here? write some topics that you have knowledge so you can help others too. 
+		<div class="input-group">
+		  <span class="input-group-addon" id="basic-addon1">#</span>
+		  <input id="topics" type="text" class="form-control" placeholder="Cook AmericanHistory Code Dogs Cars ComputerFix" aria-describedby="basic-addon1" ng-keyup="workTopics(this);">
+		</div>
+	  </div>
+	  	<div class="panel-body">
+			<ul id="readyTopics" class="list-inline" >
+				<li ng-repeat="topic in topics"><span class="label label-{{topic.color}}">#{{topic.text}}</span></li>
+			</ul>
+			<p><a class="btn btn-primary btn-lg pull-right" ng-click="apply();" role="button">Apply</a></p>
+		</div>
+	</div>
+</div>

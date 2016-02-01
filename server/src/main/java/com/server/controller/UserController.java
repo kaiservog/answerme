@@ -9,11 +9,19 @@ public class UserController {
 
 	@Inject private UserDAO userDAO;
 	 
-    public void add(User user) {
-    	userDAO.add(user);
+    public User add(User user) {
+    	return userDAO.add(user);
     }
     
     public User get(String username) {
     	return userDAO.findByUsername(username);
+    }
+    
+    public User getByUserId(String userId, String loginService) {
+    	return userDAO.findByUserId(userId, loginService);
+    }
+    
+    public void persist(User user) {
+    	userDAO.persist(user);
     }
 }
