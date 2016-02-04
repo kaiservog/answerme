@@ -70,6 +70,11 @@ html,body {
   width: 50%;
 }
 
+.container-full {
+  margin: 1 auto;
+  width: 100%;
+}
+
 .button-limit {
   margin: 1 auto;
   max-width: 220px;

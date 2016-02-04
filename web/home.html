@@ -20,74 +20,33 @@
 			User ID: {{accountHolder.userId}}
 		</div>
 
-		<div class="row">
-			<div class="col-md-12">
-				<div class="panel-footer">
+		
+		<div class="container" style="margin-top:60px">
+		  <div class="col-md-8 col-md-offset-2">
+			<div class="panel panel-default">
+			  <div class="panel-body">
 					<div class="row">
-						<div class="col-md-2">
-							<div class="input-group input-group-lg">
-								<span class="input-group-addon" id="sizing-addon1">#</span> <input
-									type="text" class="form-control" placeholder="Topic"
-									aria-describedby="sizing-addon1">
-							</div>
-						</div>
-						<div class="col-md-10">
+						<div class="col-md-3">	
 							<div class="input-group">
-								<input id="btn-input" class="form-control input-lg"
-									placeholder="Ask your question here..." type="text"> <span
-									class="input-group-btn">
-									<button class="btn btn-info btn-lg" id="btn-chat">Send</button>
-								</span>
+							  <span class="input-group-addon" id="basic-addon1">#</span>
+							  <input type="text" class="form-control" placeholder="Topic" aria-describedby="basic-addon1">
+							</div>
+						</div>
+						<div class="col-md-7">
+							<div class="input-group">
+							  <span class="input-group-addon" id="basic-addon1">Question</span>
+							  <input type="text" class="form-control" placeholder="Question" aria-describedby="basic-addon1">
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="input-group">
+								<button type="button" class="btn btn-success btn-md">Ask</button>
 							</div>
 						</div>
 					</div>
-				</div>
+			  </div>
 			</div>
-			<div class="col-md-12">
-
-				<div class="chat-panel panel panel-default">
-					<div class="panel-body scrollable ">
-						<ul class="chat">
-							<li ng-repeat="msg in msgs" class="clearfix">
-								<div class="row">
-									<div class="col-md-12">
-										<span class="chat-img pull-left"><img src="{{msg.question.avatar}}" alt="User Avatar" class="img-circle"></span>
-										<div class="loffset1 chat-body clearfix">
-											<div class="loffset1 header">
-												<strong class="primary-font"> </strong> 
-												<span class="label label-warning">#{{msg.question.topic}}</span> 
-												<small class="pull-right text-muted"> 
-													<span class="glyphicon glyphicon-time"></span> 
-													{{msg.question.time}}
-												</small>
-											</div>
-											<p class="loffset1">{{msg.question.text}}</p>
-										</div>
-									</div>
-							
-									<div class="col-md-12 voffset1">
-										<span class="chat-img pull-right"><img src="{{msg.answer.avatar}}" alt="User Avatar" class="img-circle"></span>
-										<div class="chat-body clearfix">
-											<div class="header">
-												<strong class="primary-font"> </strong> 
-												<span>&nbsp;</span> 
-												<small class="pull-left text-muted"> 
-													<span class="glyphicon glyphicon-time"></span> 
-													{{msg.answer.time}}
-												</small>
-											</div>
-											<p>{{msg.answer.text}}</p>
-										</div>
-									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-12 text-center">
-				All rights reserved (c)
-			</div>
+		  </div>
+		</div>
 		</div>
 	</div>
-</div>
