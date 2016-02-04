@@ -146,6 +146,12 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 		});
 	}
 
+	$scope.justGo = function() {
+		var account = createAccount('test user', '666', '666', 'tt', 'web');
+		accountService.set(account);
+		$location.path("/home");
+	}
+
 	$scope.startApp();
 }])
 .controller('MainCtrl', ['$route', '$routeParams', '$location', function($route, $routeParams, $location) {
@@ -153,9 +159,39 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
     this.$location = $location;
     this.$routeParams = $routeParams;
 }])
-.controller('homeController', ['$scope', 'accountService', function($scope, accountService) {
+.controller('homeController', ['$scope', '$http', 'accountService', function($scope, $http, accountService) {
 	$scope.accountHolder = accountService.get()
 	$scope.msgs = [];
+
+	$scope.delay = 5000;
+
+	setInterval(checkQuestions, $scope.delay);
+
+
+	function checkQuestions() {
+		var userId = $scope.accountHolder.userId;
+
+		$http.defaults.headers.post['dataType'] = 'json'
+
+		$http({
+		  	method: 'GET',
+		  	headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+		  	url: 'https://localhost:4567/question/find/' + userId + '/java',
+		  	dataType: 'json'
+		  }).then(function(response) {
+		  		console.log('find');
+		  		console.log(response);
+		  		if(response.data.response.message=='ok' || response.data.response.message=='notFound') {
+		  			$scope.delay = response.data.response.next;
+		  		}
+		  		if(response.data.response.message=='error') {
+		  			$scope.delay = 10000;
+		  		}
+		  		
+		  	}, function(response){console.log(response)});
+	}
+
+
 }])
 .controller('signupController', ['$scope', '$http', '$location', 'accountService', function($scope, $http, $location, accountService) {
 	$scope.apply = function () {

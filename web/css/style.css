@@ -59,8 +59,28 @@ html,body {
 .top15 { margin-top:15px; }
 .top17 { margin-top:17px; }
 .top30 { margin-top:30px; }
+.top60 { margin-top:60px; }
+.container-full {
+  margin: 0 auto;
+  width: 100%;
+}
 
+.container-half {
+  margin: 0 auto;
+  width: 50%;
+}
 
+.button-limit {
+  margin: 1 auto;
+  max-width: 220px;
+  min-width: 220px;
+}
 
+.center {
+    text-align: center;
+}
 
-
+.borderless-login-button { 
+    border-bottom: none; 
+    border-top: none;
+}

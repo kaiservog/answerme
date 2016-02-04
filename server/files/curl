@@ -11,3 +11,11 @@ curl -XPOST 'http://localhost:4567/user/add' -d ' { "request": { "firstName": "V
 #################
 
 curl -XPOST 'http://localhost:4567/question/add' -d ' { "request": { "querist": "usuario", "question": "Melhor ide java", "tag": "java"} }'
+
+
+
+
+######
+# TIPS
+######
+For HTTPS server use "curl -k"

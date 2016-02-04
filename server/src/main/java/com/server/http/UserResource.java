@@ -18,10 +18,11 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.server.controller.TopicController;
 import com.server.controller.UserController;
+import com.server.http.login.TokenValidatorFactory;
 import com.server.model.Topic;
 import com.server.model.User;
 
-public class UserResource extends Resource {
+public class UserResource {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
 
@@ -37,7 +38,6 @@ public class UserResource extends Resource {
 	
 	public void registerResource() {
 		post("/user/update", (request, response) -> {
-			startResquestScope();
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();
@@ -85,7 +85,6 @@ public class UserResource extends Resource {
 		});
 		
 		post("/user/check", (request, response) -> {
-			startResquestScope();
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();

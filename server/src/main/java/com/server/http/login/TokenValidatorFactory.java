@@ -1,4 +1,4 @@
-package com.server.http;
+package com.server.http.login;
 
 import javax.inject.Singleton;
 

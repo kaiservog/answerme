@@ -42,7 +42,6 @@ public class QuestionResource {
 	
 	public void registerResource() {
 		jedis = new Jedis(configuration.getCacheAddress(), configuration.getCachePort());
-		
 		post("/question/add", (request, response) -> {
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
@@ -69,7 +68,7 @@ public class QuestionResource {
 				jsonResponseMessage.put("message", "ok");
 
 			} catch (Exception e) {
-				logger.error("Error in request /add", e);
+				logger.error("Error in request /find", e);
 				jsonResponseMessage.put("message", "error");
 			}
 			jsonResponse.put("response", jsonResponseMessage);
@@ -77,6 +76,7 @@ public class QuestionResource {
 		});
 		
 		get("/question/find/:responder/:topic", (request, response) -> {
+			jedis = new Jedis(configuration.getCacheAddress(), configuration.getCachePort());
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();
@@ -95,9 +95,11 @@ public class QuestionResource {
 				} else {
 					jsonResponseMessage.put("message", "notFound");					
 				}
+				
+				jsonResponseMessage.put("next", 2000L);
 
 			} catch (Exception e) {
-				logger.error("Error in request /add", e);
+				logger.error("Error in request /find", e);
 				jsonResponseMessage.put("message", "error");
 			}
 			jsonResponse.put("response", jsonResponseMessage);

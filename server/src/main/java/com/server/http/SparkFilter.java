@@ -2,10 +2,10 @@ package com.server.http;
 
 import static spark.Spark.*;
 
-public class SparkFilter {
-	public static void registerResource() {
+public class SparkFilter extends Resource {
+	public void registerResource() {
 		options("/*", (request, response) -> {
-
+			startResquestScope();
 			String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
 			if (accessControlRequestHeaders != null) {
 				response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);

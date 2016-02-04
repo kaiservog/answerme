@@ -32,6 +32,9 @@ public class Main {
 	private QuestionResource questionResource;
 	@Inject
 	private Configuration configuration;
+	
+	@Inject
+	private SparkFilter sparkFilter;
 
 	public static void main(String[] args) throws IOException {
 		WeldContainer container = new Weld().initialize();
@@ -53,7 +56,7 @@ public class Main {
 
 	private void registerResources() {
 		HelloWorld.registerResource();
-		SparkFilter.registerResource();
+		sparkFilter.registerResource();
 		userResource.registerResource();
 		redistTest.registerResource();
 		questionResource.registerResource();
