@@ -28,6 +28,9 @@ answermeApp.config(function($routeProvider, $locationProvider) {
 	}).when('/signup', {
 		controller: 'signupController',
 		templateUrl: 'signup.html'
+	}).when('/answer', {
+		controller: 'answerController',
+		templateUrl: 'answer.html'
 	}).otherwise({
 		redirectTo: '/login'
 	});
@@ -192,6 +195,9 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 	}
 
 
+}])
+.controller('answerController', ['$scope', '$http', 'accountService', function($scope, $http, accountService) {
+	
 }])
 .controller('signupController', ['$scope', '$http', '$location', 'accountService', function($scope, $http, $location, accountService) {
 	$scope.apply = function () {
