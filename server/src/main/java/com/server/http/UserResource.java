@@ -73,7 +73,7 @@ public class UserResource {
 			try {
 				String username = request.params(":username");
 
-				User user = userController.get(username);
+				User user = userController.get(username, null);
 				jsonResponseMessage.put("user", gson.toJson(user));
 
 			} catch (Exception e) {

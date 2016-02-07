@@ -13,8 +13,8 @@ public class UserController {
     	return userDAO.add(user);
     }
     
-    public User get(String userId) {
-    	return userDAO.findByUserId(userId);
+    public User get(String userId, String loginService) {
+    	return userDAO.findByUserId(userId, loginService);
     }
     
     public User getByUserId(String userId, String loginService) {

@@ -50,7 +50,8 @@ public class QuestionResource {
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				String queristString = jsonRequest.getString("querist");
+				String queristString = jsonRequest.getString("userId");
+				String loginService = jsonRequest.getString("loginService");
 				String questionString = jsonRequest.getString("question");
 				String topicString = jsonRequest.getString("topic");
 				
@@ -59,7 +60,7 @@ public class QuestionResource {
 					topic = new Topic(topicString);
 					topicController.add(topic);
 				}
-				User querist = userController.get(queristString);
+				User querist = userController.get(queristString, loginService);
 				
 				Question question = new Question(querist, null, topic, questionString, null);
 				questionController.add(question);
@@ -76,7 +77,7 @@ public class QuestionResource {
 			return jsonResponse;
 		});
 		
-		get("/question/find/:responder/:topic", (request, response) -> {
+		get("/question/find/:responder/:token/:loginService/:topic", (request, response) -> {
 			jedis = new Jedis(configuration.getCacheAddress(), configuration.getCachePort());
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
@@ -84,11 +85,12 @@ public class QuestionResource {
 			try {
 				String responderString = request.params(":responder");
 				String topicString = request.params(":topic");
+				String loginService = request.params(":loginService");
 				
 				String questionId = jedis.rpop(topicString);
 				if (questionId != null) {
 					Question question = questionController.find(Integer.valueOf(questionId));
-					question.setResponder(userController.get(responderString));
+					question.setResponder(userController.get(responderString, loginService));
 					questionController.update(question);
 					
 					jsonResponseMessage.put("message", "ok");
