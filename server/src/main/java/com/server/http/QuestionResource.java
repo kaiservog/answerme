@@ -17,6 +17,7 @@ import com.server.controller.QuestionController;
 import com.server.controller.TopicController;
 import com.server.controller.UserController;
 import com.server.model.Question;
+import com.server.model.QuestionView;
 import com.server.model.Topic;
 import com.server.model.User;
 
@@ -38,7 +39,7 @@ public class QuestionResource {
 	
 	private Jedis jedis;
 	
-	private static final Gson gson = new Gson();
+	private final Gson gson = new Gson();
 	
 	public void registerResource() {
 		jedis = new Jedis(configuration.getCacheAddress(), configuration.getCachePort());
@@ -91,7 +92,7 @@ public class QuestionResource {
 					questionController.update(question);
 					
 					jsonResponseMessage.put("message", "ok");
-					jsonResponseMessage.put("question", gson.toJson(question));
+					jsonResponseMessage.put("question", new JSONObject(gson.toJson(new QuestionView(question))));
 				} else {
 					jsonResponseMessage.put("message", "notFound");					
 				}

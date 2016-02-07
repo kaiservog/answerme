@@ -5,7 +5,6 @@ import static spark.Spark.*;
 public class SparkFilter extends Resource {
 	public void registerResource() {
 		options("/*", (request, response) -> {
-			startResquestScope();
 			String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
 			if (accessControlRequestHeaders != null) {
 				response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
@@ -20,7 +19,10 @@ public class SparkFilter extends Resource {
 		});
 
 		before((request, response) -> {
+			startResquestScope();
 			response.header("Access-Control-Allow-Origin", "*");
 		});
+		
 	}
+	
 }
