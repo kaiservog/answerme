@@ -19,24 +19,29 @@
 						<div class="col-sm-3">	
 							<div class="input-group">
 							  <span class="input-group-addon" id="basic-addon1">#</span>
-							  <input type="text" class="form-control" placeholder="Topic" aria-describedby="basic-addon1">
+							  <input id="topic" type="text" class="form-control" placeholder="Topic" aria-describedby="basic-addon1" ng-keypress="jumpTopic($event);">
 							</div>
 						</div>
 						<div class="col-sm-7">
 							<div class="input-group">
 							  <span class="input-group-addon" id="basic-addon1">Question</span>
-							  <input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1">
+							  <input id="question" type="text" class="form-control" placeholder="" aria-describedby="basic-addon1">
 							</div>
 						</div>
 						<div class="col-sm-2">
 							<div class="input-group" style="padding-right: 5px; padding-left: 5px;">
-								<button type="button" class="btn btn-success btn-md">Ask</button>
+								<button type="button" class="btn btn-success btn-md" ng-click="ask();">Ask</button>
 							</div>
 						</div>
 					</div>
 			  </div>
 			</div>
+			<div class="panel panel-default">
+				<div id="messageContainer" class="panel-body">
+
+				</div>
+			</div>
 		  </div>
 		</div>
-		</div>
 	</div>
+</div>
