@@ -11,3 +11,7 @@ docker run -p 4567:4567 -it victorbalboa/answerme:tag /bin/bash
 
 #Redis listener port
 docker run -d --name a-redis -p 6379:6379 redis
+
+
+#otimo link com dicas de docker
+https://github.com/wsargent/docker-cheat-sheet

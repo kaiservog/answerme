@@ -89,3 +89,7 @@ html,body {
     border-bottom: none; 
     border-top: none;
 }
+
+.clock {
+    text-align: right;
+}
