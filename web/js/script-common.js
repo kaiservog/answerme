@@ -1,18 +1,31 @@
 var answermeApp = angular.module('answermeApp', ['ngRoute']);
-answermeApp.service('accountService', function() {
-	 var savedData = {}
-	 function set(data) {
-	   savedData = data;
-	 }
-	 function get() {
-	  return savedData;
-	 }
+	answermeApp.service('accountService', function() {
+		 var savedData = {}
+		 function set(data) {
+		   savedData = data;
+		 }
+		 function get() {
+		  return savedData;
+		 }
 
-	 return {
-	  set: set,
-	  get: get
-	 }
-});
+		 return {
+		  set: set,
+		  get: get
+		 }
+	}).service('questionService', function() {
+		 var savedData = {}
+		 function set(data) {
+		   savedData = data;
+		 }
+		 function get() {
+		  return savedData;
+		 }
+
+		 return {
+		  set: set,
+		  get: get
+		 }
+	});
 
 answermeApp.config(function($routeProvider, $locationProvider) {
   $routeProvider
@@ -157,18 +170,20 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 
 	$scope.startApp();
 }])
-.controller('MainCtrl', ['$route', '$routeParams', '$location', function($route, $routeParams, $location) {
+.controller('MainCtrl', ['$route', '$routeParams', '$location', 'questionService',
+	function($route, $routeParams, $location) {
     this.$route = $route;
     this.$location = $location;
     this.$routeParams = $routeParams;
 }])
-.controller('homeController', ['$scope', '$http', 'accountService', function($scope, $http, accountService) {
-	$scope.accountHolder = accountService.get()
+.controller('homeController', ['$scope', '$http', '$location', 'accountService', 'questionService',
+		function($scope, $http, $location, accountService, questionService) {
+	$scope.accountHolder = accountService.get();
 	$scope.msgs = [];
 
 	$scope.delay = 5000;
 
-	setInterval(checkQuestions, $scope.delay);
+	var checkId = setInterval(checkQuestions, $scope.delay);
 
 
 	function checkQuestions() {
@@ -184,9 +199,19 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 		  }).then(function(response) {
 		  		console.log('find');
 		  		console.log(response);
-		  		if(response.data.response.message=='ok' || response.data.response.message=='notFound') {
-		  			$scope.delay = response.data.response.next;
+		  		if(response.data.response.message=='ok') {
+		  			questionService.set({
+		  				topic: response.data.response.question.topic,
+		  				question: response.data.response.question.question
+
+		  			});
+		  			clearInterval(checkId);
+		  			$location.path('/answer');
 		  		}
+		  		if(response.data.response.message == 'notFound') {
+					$scope.delay = response.data.response.next;
+		  		}
+		  			
 		  		if(response.data.response.message=='error') {
 		  			$scope.delay = 10000;
 		  		}
@@ -196,7 +221,18 @@ answermeApp.controller('loginController', ['$scope', 'accountService', '$locatio
 
 
 }])
-.controller('answerController', ['$scope', '$http', 'accountService', function($scope, $http, accountService) {
+.controller('answerController', ['$scope', '$http', '$location', 'accountService', 'questionService', 'accountService',
+	function($scope, $http, $location, accountService, questionService, accountService) {
+		$scope.question = questionService.get();
+		$scope.accountHolder = accountService.get();
+		$scope.appendAnswer = function() {
+			$('#answer').removeClass('hidden');
+			$('#bt-answer').addClass('hidden');
+			$('#bt-ignore').addClass('hidden');
+		}
+		$scope.goHome = function() {
+			$location.path('/home');
+		}
 	
 }])
 .controller('signupController', ['$scope', '$http', '$location', 'accountService', function($scope, $http, $location, accountService) {

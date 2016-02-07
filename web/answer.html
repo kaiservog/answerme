@@ -16,20 +16,20 @@
 			<div class="panel panel-default">
 			  <div class="panel-body">
 					<div class="jumbotron">
-					  <h1>#Java</h1>
-					  <p>How can I make a jar?</p>
-					  
+					  <h1>#{{question.topic}}</h1>
+					  <p>{{question.question}}</p>
+					  {{topic}}
 					  <div class="row" >
 						<div class="col-sm-6">	
-							<p><a class="btn btn-primary btn-lg" href="#" role="button">Answer</a></p>
+							<p><a class="btn btn-primary btn-lg" id="bt-answer" role="button" ng-click="appendAnswer();">Answer</a></p>
 						</div>
 
 						<div class="col-sm-6">	
-							<p><a class="btn btn-danger btn-lg" href="#" role="button">Ignore</a></p>
+							<p><a class="btn btn-danger btn-lg" id="bt-ignore" ng-click="goHome();" role="button">Ignore</a></p>
 						</div>
 						</div>
 					</div>
-					<div id="answer">
+					<div id="answer" class="hidden">
 					<div class="row" >
 						<div class="col-sm-12">	
 							<div class="form-group">
