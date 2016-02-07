@@ -9,10 +9,21 @@ angular
 			var div = $('<div>').html(text);
 			div.addClass('alert');
 			div.addClass('alert-' + severity);
-			$('#messageContainer').append(div);
+			$('#messageContainer-body').append(div);
 			setTimeout(function() {
 				div.remove();	
 			}, 10000)
+		}
+		$scope.alert('oi', 'info');
+		$scope.messageContainerHider = function() {
+			var container = $('#messageContainer');
+			var containerBody = $('#messageContainer-body');
+			
+			if(containerBody.children().size() > 0) {
+				container.removeClass('hidden');
+			}else {
+				container.addClass('hidden');
+			}
 		}
 
 		$scope.jumpTopic = function(event) {
@@ -49,7 +60,8 @@ angular
 		} 
 
 		var checkId = setInterval(checkQuestions, $scope.delay);
-
+		var hiderId = setInterval($scope.messageContainerHider, 1000);
+				
 
 		function checkQuestions() {
 			var userId = $scope.accountHolder.userId;
@@ -73,6 +85,7 @@ angular
 
 			  			});
 			  			clearInterval(checkId);
+						clearInterval(hiderId);
 			  			$location.path('/answer');
 			  		}
 			  		if(response.data.response.message == 'notFound') {
