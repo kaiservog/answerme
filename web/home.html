@@ -3,11 +3,10 @@
 		<nav class="navbar navbar-static-top navbar-dark navbar-inverse" style="background-color: #222222;">
 		  <a class="navbar-brand" href="#">#Answerme</a>
 		  <ul class="nav navbar-nav">
-				<li><a href="#"> {{accountHolder.name}} <span class="badge">42</span></a></li>
-				<li><a href="#">About</a></li>
-				<li><a href="#">Trendings topics</a></li>
-				<li><a href="#">Logout</a></li>
-				<li><a href="#">User ID: {{accountHolder.userId}} <span class="badge">{{delay}}ms</span></a></li>
+				<li><a href ng-click="updateModalShow();" > {{accountHolder.name}} <span class="badge">42</span></a></li>
+				<li><a href="#">How it's works</a></li>
+				<li><a href="#">Trendings #Topics</a></li>
+				<li><a ng-href="#/login" >Logout</a></li>
 			</ul>
 		</nav>
 		
@@ -36,12 +35,93 @@
 					</div>
 			  </div>
 			</div>
-			<div id="messageContainer" class="panel panel-default">
+			<div id="messageContainer" class="panel panel-default hidden">
 				<div id="messageContainer-body" class="panel-body">
 
 				</div>
 			</div>
 		  </div>
 		</div>
+	
+		<!-- modal answer -->
+		<div id="answer-modal" class="modal fade" tabindex="-1" role="dialog"> 
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<span class="label label-info">#{{answer.topic}}</span>
+					</div>
+					<div class="modal-body">
+						{{answer.question}}
+						<hr>
+						<h4><p>{{answer.answer}}</p></h4>
+					</div>
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+						<button type="button" class="btn btn-danger" data-toggle="popover"
+							ng-click="directRejectAnswer();"
+							data-placement="bottom" title="Are you sure?" 
+							data-content="If you click this button again the person who answered your question will not receive his points for answer you.">Not OK</button>
+					</div>
+				</div>	
+			</div>
+		</div>
+		<!-- modal -->
+		<!-- modal update -->
+		<div id="update-modal" class="modal fade" tabindex="-1" role="dialog"> 
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2>{{accountHolder.name}}</h2>
+					</div>
+					<div class="modal-body">
+						<h4>Write or remove some topics that you want to answer</h4>
+						<div class="input-group">
+						  <span class="input-group-addon" id="basic-addon1">#</span>
+						  <input id="topics" type="text" class="form-control" placeholder="Cook AmericanHistory Code Dogs Cars ComputerFix" aria-describedby="basic-addon1" ng-keyup="workTopics(this);">
+						</div>
+						<div class="panel-body">
+							<ul id="readyTopics" class="list-inline" >
+								<li ng-repeat="topic in topics"><span class="label label-{{topic.color}}">#{{topic.text}}</span></li>
+							</ul>
+							<p><a class="btn btn-primary btn-md pull-right" ng-click="apply();" role="button">Apply</a></p>
+						</div>
+						<hr>
+						<h4>Questions</h4>
+						<ul>
+							<li>
+								<span>teste</span>
+								<span>teste2</span>
+							</li>
+							<li>
+								<span>teste</span>
+								<span>teste2</span>
+							</li>
+							<li>
+								<span>teste</span>
+								<span>teste2</span>
+							</li>
+							<li>
+								<span>teste</span>
+								<span>teste2</span>
+							</li>
+
+						</ul>
+						<nav>
+						  <ul class="pager">
+						    <li><a href="#">Previous</a></li>
+						    <li><a href="#">Next</a></li>
+						  </ul>
+						</nav>
+
+					</div>
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+					</div>
+				</div>	
+			</div>
+		</div>
+		<!-- modal -->
 	</div>
 </div>
