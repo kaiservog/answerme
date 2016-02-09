@@ -50,3 +50,6 @@ answermeApp.config(function($routeProvider, $locationProvider) {
 	});
 });
 
+answermeApp.constant('cfg', {
+	'BACKEND_ADDRESS' : 'https://localhost:4567' 
+});

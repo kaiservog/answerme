@@ -66,15 +66,16 @@ public class UserResource {
 			return jsonResponse;
 		});
 		
-		get("/user/get/:username", (request, response) -> {
+		get("/user/get/:userid/:loginService", (request, response) -> {
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();
 			try {
-				String username = request.params(":username");
+				String userId = request.params(":userid");
+				String loginService = request.params(":loginService");
 
-				User user = userController.get(username, null);
-				jsonResponseMessage.put("user", gson.toJson(user));
+				User user = userController.get(userId, loginService);
+				jsonResponseMessage.put("user", new JSONObject(gson.toJson(user)));
 
 			} catch (Exception e) {
 				logger.error("Error in request /get", e);

@@ -1,6 +1,7 @@
 angular
 	.module('answermeApp')
-	.controller('homeController', ['$scope', '$http', '$location', 'accountService', 'questionService', function($scope, $http, $location, accountService, questionService) {
+	.controller('homeController', ['$scope', '$http', '$location', 'accountService', 'questionService', 'cfg',
+		function($scope, $http, $location, accountService, questionService, cfg) {
 		$scope.accountHolder = accountService.get();
 		$scope.msgs = [];
 
@@ -33,7 +34,27 @@ angular
 		}
 
 		$scope.updateModalShow = function() {
-			$('#update-modal').modal('show');
+			$http.defaults.headers.post['dataType'] = 'json'
+
+			$http({
+			  	method: 'GET',
+			  	headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+			  	url: cfg.BACKEND_ADDRESS + '/user/get/' + $scope.accountHolder. userId + '/' + $scope.accountHolder.service,
+			  	dataType: 'json'
+			  }).then(function(response) {
+			  	console.log(response);
+			  	$scope.rawTopics = '';
+			  	response.data.response.user.topics.forEach(function(elm, index) {
+			  		$scope.rawTopics = $scope.rawTopics + elm.name + ' ';
+			  	});
+			  	$('#topics').val($scope.rawTopics);
+			  	$scope.workTopics();
+			  }, function(response){
+			  	console.log(response);
+			  	$scope.alert('Something weird happened', 'danger');
+			  });
+
+			  $('#update-modal').modal('show');
 		}
 
 		$scope.ask = function() {
@@ -72,33 +93,39 @@ angular
 		}
 
 		$scope.apply = function () {
-		var topics = $('#topics').val();
+			var topics = $('#topics').val();
 
-		var request = {
-			userId: accountService.get().userId,
-			service: accountService.get().service,
-			topics: topics
+			if($scope.rawTopics == topics) {
+				$('#update-modal').modal('hide');
+				return;
+			}
+
+			var request = {
+				userId: accountService.get().userId,
+				service: accountService.get().service,
+				topics: topics
+			}
+
+			$http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+			$http.defaults.headers.common['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, DELETE';
+			$http.defaults.headers.common['Access-Control-Max-Age'] = '3600';
+			$http.defaults.headers.common['Access-Control-Allow-Headers'] = 'x-requested-with';
+
+			$http.defaults.headers.post['dataType'] = 'json'
+
+			$http({
+			  	method: 'POST',
+			  	headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+			  	url: cfg.BACKEND_ADDRESS + '/user/update',
+			  	dataType: 'json',
+			  	data: {request: request}
+			  }).then(function(response) {
+			  	if(response.data.response.message=='ok') $location.path("/home");
+			  	}, function(response){console.log(response)});
+			$('#update-modal').modal('hide');
 		}
 
-		$http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-		$http.defaults.headers.common['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, DELETE';
-		$http.defaults.headers.common['Access-Control-Max-Age'] = '3600';
-		$http.defaults.headers.common['Access-Control-Allow-Headers'] = 'x-requested-with';
-
-		$http.defaults.headers.post['dataType'] = 'json'
-
-		$http({
-		  	method: 'POST',
-		  	headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-		  	url: 'https://localhost:4567/user/update',
-		  	dataType: 'json',
-		  	data: {request: request}
-		  }).then(function(response) {
-		  	if(response.data.response.message=='ok') $location.path("/home");
-		  	}, function(response){console.log(response)});
-		}
-
-		$scope.workTopics = function (field) {
+		$scope.workTopics = function () {
 			var val = $('#topics').val();
 
 			$scope.topics = splitTopics(val).map(mapTopics);

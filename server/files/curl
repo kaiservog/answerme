@@ -1,7 +1,7 @@
 #################
 #	USER
 #################
-curl -XGET 'http://localhost:4567/user/get/victor'
+curl -XGET 'http://localhost:4567/user/get/:userid/fb'
 
 curl -XPOST 'http://localhost:4567/user/add' -d ' { "request": { "firstName": "Victor", "lastName": "Homsi Mora", "phone": "11983354385", "username": "usuario", "password": "senha" } }'
 

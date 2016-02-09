@@ -4,7 +4,7 @@
 		  <a class="navbar-brand" href="#">#Answerme</a>
 		  <ul class="nav navbar-nav">
 				<li><a href ng-click="updateModalShow();" > {{accountHolder.name}} <span class="badge">42</span></a></li>
-				<li><a href="#">How it's works</a></li>
+				<li><a href data-target="#works-modal" data-toggle="modal" >How it's works</a></li>
 				<li><a href="#">Trendings #Topics</a></li>
 				<li><a ng-href="#/login" >Logout</a></li>
 			</ul>
@@ -78,7 +78,7 @@
 						<h4>Write or remove some topics that you want to answer</h4>
 						<div class="input-group">
 						  <span class="input-group-addon" id="basic-addon1">#</span>
-						  <input id="topics" type="text" class="form-control" placeholder="Cook AmericanHistory Code Dogs Cars ComputerFix" aria-describedby="basic-addon1" ng-keyup="workTopics(this);">
+						  <input id="topics" type="text" class="form-control" placeholder="Cook AmericanHistory Code Dogs Cars ComputerFix" aria-describedby="basic-addon1" ng-keyup="workTopics();">
 						</div>
 						<div class="panel-body">
 							<ul id="readyTopics" class="list-inline" >
@@ -114,6 +114,24 @@
 						  </ul>
 						</nav>
 
+					</div>
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+					</div>
+				</div>	
+			</div>
+		</div>
+		<!-- modal -->
+		<!-- modal How its works-->
+		<div id="works-modal" class="modal fade" tabindex="-1" role="dialog"> 
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2>How it's works</h2>
+					</div>
+					<div class="modal-body">
+						Lorem ipsum TODO
 					</div>
 					<div class="modal-footer">
 
