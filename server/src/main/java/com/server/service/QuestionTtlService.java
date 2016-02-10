@@ -10,9 +10,10 @@ import org.quartz.JobExecutionException;
 
 import com.server.conf.RedisClient;
 import com.server.controller.QuestionController;
+import com.server.http.Resource;
 import com.server.model.Question;
 
-public class QuestionTtlService implements Job {
+public class QuestionTtlService extends Resource implements Job {
 	
 	@Inject
 	private QuestionController questionController;
@@ -21,6 +22,8 @@ public class QuestionTtlService implements Job {
 	private RedisClient redisClient;
 	
 	public void execute(JobExecutionContext context) throws JobExecutionException {
+		startResquestScope();
+		
 		List<Question> expiredQuestions = questionController.updateExpiredQuestions();
 		
 		for (Question question : expiredQuestions) {

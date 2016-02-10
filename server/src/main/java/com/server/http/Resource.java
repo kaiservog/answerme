@@ -8,8 +8,6 @@ import org.jboss.weld.environment.se.WeldContainer;
 
 import com.server.conf.RedisClient;
 
-import redis.clients.jedis.Jedis;
-
 public class Resource {
 	@Inject
 	private WeldContainer container;
@@ -26,7 +24,6 @@ public class Resource {
 	protected void tokenRegister(Long userId, String extUserId, String loginService, String token){
 		jedisClient.getJedis().set(token + loginService, extUserId);
 		jedisClient.getJedis().set(extUserId + loginService, userId.toString());
-		
 	}
 	
 	protected String getExternalUserId(String token, String loginService) {

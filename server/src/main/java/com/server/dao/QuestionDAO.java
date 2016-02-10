@@ -64,6 +64,7 @@ public class QuestionDAO {
 			Query query = manager.createQuery("update Question set ttl = 0, responder = null where ttl < :time and responder is null");
 			query.setParameter("time", time);
 			query.executeUpdate();
+			manager.getTransaction().commit();
 		} catch (Exception e) {
 			logger.error("Error updating expired questions: ", e.getMessage());
 			manager.getTransaction().rollback();
@@ -92,6 +93,7 @@ public class QuestionDAO {
 			Query query = manager.createQuery("update Question set ttl = 0, responder = null where ttl < :time and responder is not null");
 			query.setParameter("time", time);
 			query.executeUpdate();
+			manager.getTransaction().commit();
 		} catch (Exception e) {
 			logger.error("Error updating expired questions: ", e.getMessage());
 			manager.getTransaction().rollback();

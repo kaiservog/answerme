@@ -12,7 +12,9 @@ curl -XPOST 'http://localhost:4567/user/add' -d ' { "request": { "firstName": "V
 
 curl -XPOST 'http://localhost:4567/question/add' -d ' { "request": { "querist": "usuario", "question": "Melhor ide java", "topic": "java"} }'
 
+curl -XPOST 'http://localhost:4567/question/find' -d ' { "request": { "topic": "java" } }'
 
+curl -XPOST 'http://localhost:4567/question/accept' -d ' { "request": { "topic": "java" } }'
 
 
 ######
