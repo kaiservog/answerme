@@ -33,22 +33,24 @@ public class Question implements Serializable {
 	@OneToOne()
 	@JoinColumn(name = "topic")
 	private Topic topic;
-	
 	@Column(name = "question")
 	private String question;
 	@Column(name = "answer")
 	private String answer;
+	@Column(name = "ttl")
+	private long ttl;
 
 	public Question() {
 	}
 	
-	public Question(User querist, User responder, Topic topic, String question, String answer) {
+	public Question(User querist, User responder, Topic topic, String question, String answer, long ttl) {
 		super();
 		this.querist = querist;
 		this.responder = responder; 
 		this.topic = topic;
 		this.question = question;
 		this.answer = answer;
+		this.ttl = ttl;
 	}
 
 	public int getId() {
@@ -97,5 +99,13 @@ public class Question implements Serializable {
 
 	public void setTopic(Topic topic) {
 		this.topic = topic;
+	}
+
+	public long getTtl() {
+		return ttl;
+	}
+
+	public void setTtl(long ttl) {
+		this.ttl = ttl;
 	}
 }

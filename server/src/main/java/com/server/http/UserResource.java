@@ -8,9 +8,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.jboss.weld.context.RequestContext;
-import org.jboss.weld.context.unbound.UnboundLiteral;
-import org.jboss.weld.environment.se.WeldContainer;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

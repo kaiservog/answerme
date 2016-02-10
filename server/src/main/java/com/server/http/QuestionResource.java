@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 
 import com.google.gson.Gson;
-import com.server.conf.Configuration;
+import com.server.conf.RedisClient;
 import com.server.controller.QuestionController;
 import com.server.controller.TopicController;
 import com.server.controller.UserController;
@@ -32,9 +32,6 @@ public class QuestionResource extends Resource {
 	
 	@Inject
 	private QuestionController questionController;
-	
-	@Inject
-	private Configuration configuration;
 	
 	private final Gson gson = new Gson();
 	
@@ -57,13 +54,14 @@ public class QuestionResource extends Resource {
 					topic = new Topic(topicString);
 					topicController.add(topic);
 				}
+				
 				String userId = getUserId(token, loginService);
 				User querist = userController.getById(userId);
 				
-				Question question = new Question(querist, null, topic, questionString, null);
+				Question question = new Question(querist, null, topic, questionString, null, 0);
 				questionController.add(question);
 				
-				getJedis().lpush(topic.getName(), String.valueOf(question.getId()));
+				getJedisClient().getJedis().lpush(topic.getName(), String.valueOf(question.getId()));
 				
 				jsonResponseMessage.put("message", "ok");
 
@@ -75,7 +73,62 @@ public class QuestionResource extends Resource {
 			return jsonResponse;
 		});
 		
-		get("/question/find/:responder/:token/:loginService/:topic", (request, response) -> {
+		get("/question/accept/:token/:loginService/:questionId", (request, response) -> {
+			response.type("application/json");
+			JSONObject jsonResponse = new JSONObject();
+			JSONObject jsonResponseMessage = new JSONObject();
+			try {
+				String tokenString = request.params(":token");
+				String loginService = request.params(":loginService");
+				String questionId = request.params(":questionId");
+
+				if (questionId != null) {
+					Question question = questionController.find(Integer.valueOf(questionId));
+					question.setResponder(userController.get(tokenString, loginService));
+					question.setTtl(System.currentTimeMillis());
+					questionController.update(question);
+
+					jsonResponseMessage.put("message", "ok");
+				} else {
+					jsonResponseMessage.put("message", "invalid questionId");
+				}
+
+			} catch (Exception e) {
+				logger.error("Error in request /find", e);
+				jsonResponseMessage.put("message", "error");
+			}
+			jsonResponse.put("response", jsonResponseMessage);
+			return jsonResponse;
+		});
+		
+		get("/question/reject/:questionId", (request, response) -> {
+			response.type("application/json");
+			JSONObject jsonResponse = new JSONObject();
+			JSONObject jsonResponseMessage = new JSONObject();
+			try {
+				String questionId = request.params(":questionId");
+
+				if (questionId != null) {
+					Question question = questionController.find(Integer.valueOf(questionId));
+					question.setTtl(0);
+					questionController.update(question);
+
+					getJedisClient().getJedis().lpush(question.getTopic().getName(), String.valueOf(question.getId()));
+
+					jsonResponseMessage.put("message", "ok");
+				} else {
+					jsonResponseMessage.put("message", "invalid question id");
+				}
+
+			} catch (Exception e) {
+				logger.error("Error in request /find", e);
+				jsonResponseMessage.put("message", "error");
+			}
+			jsonResponse.put("response", jsonResponseMessage);
+			return jsonResponse;
+		});
+		
+		get("/question/find/:token/:loginService/:topic", (request, response) -> {
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();
@@ -84,14 +137,14 @@ public class QuestionResource extends Resource {
 				String topicString = request.params(":topic");
 				String loginService = request.params(":loginService");
 				
-				String questionId = getJedis().rpop(topicString);
+				String questionId = getJedisClient().getJedis().rpop(topicString);
 				if (questionId != null) {
 					Question question = questionController.find(Integer.valueOf(questionId));
 					User responder = userController.get(responderString, loginService);
 					
 					if(question.getQuerist().equals(responder)) {
 						jsonResponseMessage.put("message", "notFound");
-						getJedis().rpush(topicString, questionId);
+						getJedisClient().getJedis().rpush(topicString, questionId);
 					}else {
 						question.setResponder(responder);
 						questionController.update(question);
@@ -104,6 +157,41 @@ public class QuestionResource extends Resource {
 				}
 				
 				jsonResponseMessage.put("next", 2000L);
+
+			} catch (Exception e) {
+				logger.error("Error in request /find", e);
+				jsonResponseMessage.put("message", "error");
+			}
+			jsonResponse.put("response", jsonResponseMessage);
+			return jsonResponse;
+		});
+		
+		get("/question/answer/:token/:loginService/:questionId/:answer", (request, response) -> {
+			response.type("application/json");
+			JSONObject jsonResponse = new JSONObject();
+			JSONObject jsonResponseMessage = new JSONObject();
+			try {
+				String tokenString = request.params(":token");
+				String loginService = request.params(":loginService");
+				String questionId = request.params(":questionId");
+				String answer = request.params(":answer");
+
+				if (questionId != null) {
+					Question question = questionController.find(Integer.valueOf(questionId));
+					// TODO: MELHORAR COMPARACAO USER
+//					if (question.getResponder() != null && question.getResponder().getId().equals(tokenString) &&  
+//							question.getResponder().getLoginService().equals(loginService)) {
+//						question.setTtl(0);
+//						question.setAnswer(answer);
+//						questionController.update(question);
+//
+//						jsonResponseMessage.put("message", "ok");
+//					} else {
+//						jsonResponseMessage.put("message", "question expired");
+//					}
+				} else {
+					jsonResponseMessage.put("message", "invalid questionId");
+				}
 
 			} catch (Exception e) {
 				logger.error("Error in request /find", e);
