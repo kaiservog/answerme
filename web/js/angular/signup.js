@@ -1,12 +1,13 @@
 angular
 	.module('answermeApp')
-	.controller('signupController', ['$scope', '$http', '$location', 'accountService', function($scope, $http, $location, accountService) {
+	.controller('signupController', ['$scope', '$http', '$location', 'accountService', 'cfg',
+		function($scope, $http, $location, accountService, cfg) {
 	$scope.apply = function () {
 		var topics = $('#topics').val();
 
 		var request = {
-			userId: accountService.get().userId,
-			service: accountService.get().service,
+			token: accountService.get().token,
+			loginService: accountService.get().loginService,
 			topics: topics
 		}
 
@@ -20,7 +21,7 @@ angular
 		$http({
 		  	method: 'POST',
 		  	headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-		  	url: 'https://localhost:4567/user/update',
+		  	url: cfg.BACKEND_ADDRESS + '/user/update',
 		  	dataType: 'json',
 		  	data: {request: request}
 		  }).then(function(response) {

@@ -17,40 +17,40 @@ public class UserDAO extends Dao<User> {
 		try {
 			getManager().persist(user);
 		} catch (Exception e) {
-			logger.error("Error inserting userid: " + user.getUserId());
+			logger.error("Error inserting userid: " + user.getExternalUserId());
 			throw e;
 		}
 		return user;
 	}
 	
-	public User findByUserId(String userId) {
+	public User findByExternalUserId(String externalUserId, String loginService) {
 		User user = null;
 		try {
-			Query query = getManager().createQuery("from User where userid = :userid");
-			query.setParameter("userid", userId);
+			Query query = getManager().createQuery("from User where externaluserid = :externalUserId and loginservice = :loginservice");
+			query.setParameter("externalUserId", externalUserId);
+			query.setParameter("loginservice", loginService);
 			
 			user = (User) query.getSingleResult();
 		} catch (NoResultException e) {
-			logger.error("Error returning userid: " + userId);
+			logger.error("Error returning userId: " + externalUserId);
 		} catch (Exception e) {
-			logger.error("Error returning userid: " + userId, e);
+			logger.error("Error returning userId: " + externalUserId, e);
 		}
 		
 		return user;
 	}
 	
-	public User findByUserId(String userId, String loginService) {
+	public User findById(long id) {
 		User user = null;
 		try {
-			Query query = getManager().createQuery("from User where userid = :userId and loginservice = :loginservice");
-			query.setParameter("userId", userId);
-			query.setParameter("loginservice", loginService);
+			Query query = getManager().createQuery("from User where id = :id");
+			query.setParameter("id", id);
 			
 			user = (User) query.getSingleResult();
 		} catch (NoResultException e) {
-			logger.error("Error returning userId: " + userId);
+			logger.error("Error returning userId: " + id);
 		} catch (Exception e) {
-			logger.error("Error returning userId: " + userId, e);
+			logger.error("Error returning userId: " + id, e);
 		}
 		
 		return user;

@@ -19,12 +19,15 @@ public abstract class TokenValidator {
 		logger.info("Validating token on url: " + getUrl());
 		String bodyString = accessTokenService();
 		logger.info("response for token is: " + bodyString);
+		if(bodyString == null) return this.validate(null);
 		JSONObject body = new JSONObject(bodyString);
 		return this.validate(body);
 	}
 
 	private String accessTokenService() throws UnirestException {
-		HttpRequest request = Unirest.get(getUrl()).queryString("id_token", this.token);
+		String url = getUrl();
+		if(url == null) return null;
+		HttpRequest request = Unirest.get(url).queryString("id_token", this.token);
 
 		HttpResponse<String> response = request.asString();
 

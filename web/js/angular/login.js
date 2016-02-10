@@ -1,13 +1,14 @@
 angular
 	.module('answermeApp')
-	.controller('loginController', ['$scope', 'accountService', '$location', '$http', function($scope, accountService, $location, $http) {
-	function createAccount(name, userId, token, service, client) {
+	.controller('loginController', ['$scope', 'accountService', '$location', '$http', 'cfg',
+		function($scope, accountService, $location, $http, cfg) {
+	function createAccount(name, extUserId, token, loginService) {
 		return {
 			name: name,
-			userId: userId,
+			extUserId: extUserId,
 			token: token,
-			service: service,
-			client: client
+			loginService: loginService,
+			client: 'web'
 		}
 	}
 	function callbackStatus(response) {
@@ -25,7 +26,7 @@ angular
 		$http({
 		  	method: 'POST',
 		  	headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-		  	url: 'https://localhost:4567/user/check',
+		  	url: cfg.BACKEND_ADDRESS + '/user/check',
 		  	dataType: 'json',
 		  	data: {request: account}
 		  }).then(function(response) {
@@ -44,7 +45,7 @@ angular
 	$scope.statusChangeCallback = function (response) {
 		if (response.status === 'connected') {
 		  var name = '';
-		  var account = createAccount(undefined, response.authResponse.userID, response.authResponse.accessToken, 'fb', 'web');
+		  var account = createAccount(undefined, response.authResponse.userID, response.authResponse.accessToken, 'fb');
 
 		  FB.api('/me', function(response) {
 			account.name = response.name 
@@ -114,9 +115,9 @@ angular
 	}
 
 	$scope.justGo = function() {
-		var account = createAccount('test user', '666', '666', 'tt', 'web');
+		var account = createAccount('test user', '666', '666000', 'tt', 'web');
 		accountService.set(account);
-		$location.path("/home");
+		signin(account);
 	}
 
 	$scope.startApp();

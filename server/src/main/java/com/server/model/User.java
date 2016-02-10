@@ -25,28 +25,26 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "user_seq")
 	@Column(name = "id_user", unique = true, insertable = false, updatable = false)
 	private long id;
-	
-	@Column(name = "userid")
-	private String userId;
-	
+
+	@Column(name = "externaluserid")
+	private String externalUserId;
+
 	@Column(name = "loginservice")
 	private String loginService;
-	
+
 	@Column(name = "firstname")
 	private String firstName;
 
 	@ManyToMany
-	@JoinTable(name="user_topic" , 
-		joinColumns={@JoinColumn(name="id_user")}, 
-		inverseJoinColumns={@JoinColumn(name="id_topic")})
+	@JoinTable(name = "user_topic", joinColumns = { @JoinColumn(name = "id_user") }, inverseJoinColumns = { @JoinColumn(name = "id_topic") })
 	private List<Topic> topics;
-	
+
 	public User() {
 	}
 
-	public User(String userId, String loginService, String firstName) {
+	public User(String externalUserId, String loginService, String firstName) {
 		super();
-		this.userId = userId;
+		this.externalUserId = externalUserId;
 		this.loginService = loginService;
 		this.firstName = firstName;
 	}
@@ -67,14 +65,6 @@ public class User implements Serializable {
 		this.firstName = firstName;
 	}
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
 	public String getLoginService() {
 		return loginService;
 	}
@@ -90,6 +80,13 @@ public class User implements Serializable {
 	public void setTopics(List<Topic> topics) {
 		this.topics = topics;
 	}
-	
-	
+
+	public String getExternalUserId() {
+		return externalUserId;
+	}
+
+	public void setExternalUserId(String externalUserId) {
+		this.externalUserId = externalUserId;
+	}
+
 }

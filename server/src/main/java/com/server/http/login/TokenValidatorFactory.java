@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 public class TokenValidatorFactory {
 	public TokenValidator get(String key, String token, String userId) {
 		if("gp".equals(key)) return new GoogleTokenValidatior(token, userId);
+		else if("tt".equals(key)) return new TesterTokenValidatior(token, userId);
 		else return null;
 	}
 }

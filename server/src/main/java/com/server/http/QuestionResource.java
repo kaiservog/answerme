@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import redis.clients.jedis.Jedis;
 
 import com.google.gson.Gson;
 import com.server.conf.Configuration;
@@ -21,7 +20,7 @@ import com.server.model.QuestionView;
 import com.server.model.Topic;
 import com.server.model.User;
 
-public class QuestionResource {
+public class QuestionResource extends Resource {
 
 	private static final Logger logger = LoggerFactory.getLogger(QuestionResource.class);
 
@@ -37,12 +36,9 @@ public class QuestionResource {
 	@Inject
 	private Configuration configuration;
 	
-	private Jedis jedis;
-	
 	private final Gson gson = new Gson();
 	
 	public void registerResource() {
-		jedis = new Jedis(configuration.getCacheAddress(), configuration.getCachePort());
 		post("/question/add", (request, response) -> {
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
@@ -50,22 +46,24 @@ public class QuestionResource {
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				String queristString = jsonRequest.getString("userId");
+				String token = jsonRequest.getString("token");
 				String loginService = jsonRequest.getString("loginService");
 				String questionString = jsonRequest.getString("question");
 				String topicString = jsonRequest.getString("topic");
 				
+				logger.info("Question add " + questionString);
 				Topic topic = topicController.findByName(topicString);
 				if (topic == null) {
 					topic = new Topic(topicString);
 					topicController.add(topic);
 				}
-				User querist = userController.get(queristString, loginService);
+				String userId = getUserId(token, loginService);
+				User querist = userController.getById(userId);
 				
 				Question question = new Question(querist, null, topic, questionString, null);
 				questionController.add(question);
 				
-				jedis.lpush(topic.getName(), String.valueOf(question.getId()));
+				getJedis().lpush(topic.getName(), String.valueOf(question.getId()));
 				
 				jsonResponseMessage.put("message", "ok");
 
@@ -78,7 +76,6 @@ public class QuestionResource {
 		});
 		
 		get("/question/find/:responder/:token/:loginService/:topic", (request, response) -> {
-			jedis = new Jedis(configuration.getCacheAddress(), configuration.getCachePort());
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();
@@ -87,14 +84,21 @@ public class QuestionResource {
 				String topicString = request.params(":topic");
 				String loginService = request.params(":loginService");
 				
-				String questionId = jedis.rpop(topicString);
+				String questionId = getJedis().rpop(topicString);
 				if (questionId != null) {
 					Question question = questionController.find(Integer.valueOf(questionId));
-					question.setResponder(userController.get(responderString, loginService));
-					questionController.update(question);
+					User responder = userController.get(responderString, loginService);
 					
-					jsonResponseMessage.put("message", "ok");
-					jsonResponseMessage.put("question", new JSONObject(gson.toJson(new QuestionView(question))));
+					if(question.getQuerist().equals(responder)) {
+						jsonResponseMessage.put("message", "notFound");
+						getJedis().rpush(topicString, questionId);
+					}else {
+						question.setResponder(responder);
+						questionController.update(question);
+						
+						jsonResponseMessage.put("message", "ok");
+						jsonResponseMessage.put("question", new JSONObject(gson.toJson(new QuestionView(question))));
+					}
 				} else {
 					jsonResponseMessage.put("message", "notFound");					
 				}

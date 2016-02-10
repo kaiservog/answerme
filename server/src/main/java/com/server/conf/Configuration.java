@@ -21,28 +21,37 @@ public class Configuration {
 	}
 
 	public boolean isSecureEnabled() {
-		return props.get("secure").equals("true");
+		return getProps().get("secure").equals("true");
 	}
 
 	public String getCacheAddress() {
-		return (String) props.get("cache.address");
+		return (String) getProps().get("cache.address");
 	}
 
 	public Integer getCachePort() {
-		return Integer.valueOf((String) props.get("cache.port"));
+		return Integer.valueOf((String) getProps().get("cache.port"));
 	}
 
 	public String getKeyStorePath() {
-		return (String) props.get("keystore.dir");
+		return (String) getProps().get("keystore.dir");
 	}
 
 	public String getKeyStorePass() {
 		// TODO adicionar criptografia
-		return (String) props.get("keystore.pass");
+		return (String) getProps().get("keystore.pass");
 	}
 
 	public String getStoredConfPath() {
-		return (String) props.get("store.conf.dir");
+		return (String) getProps().get("store.conf.dir");
+	}
+
+	private Properties getProps() {
+		try {
+			if(props == null) load();
+		}catch(IOException e) {
+			
+		}
+		return props;
 	}
 
 }

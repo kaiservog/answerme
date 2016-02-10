@@ -13,12 +13,20 @@ public class UserController {
     	return userDAO.add(user);
     }
     
-    public User get(String userId, String loginService) {
-    	return userDAO.findByUserId(userId, loginService);
+    public User get(String externalUserId, String loginService) {
+    	return userDAO.findByExternalUserId(externalUserId, loginService);
     }
     
-    public User getByUserId(String userId, String loginService) {
-    	return userDAO.findByUserId(userId, loginService);
+    public User getByExternalUserId(String externalUserId, String loginService) {
+    	return userDAO.findByExternalUserId(externalUserId, loginService);
+    }
+    
+    public User getById(long id) {
+    	return userDAO.findById(id);
+    }
+    
+    public User getById(String id) {
+    	return userDAO.findById(Long.valueOf(id));
     }
     
     public void persist(User user) {

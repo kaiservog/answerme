@@ -39,7 +39,7 @@ angular
 			$http({
 			  	method: 'GET',
 			  	headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-			  	url: cfg.BACKEND_ADDRESS + '/user/get/' + $scope.accountHolder. userId + '/' + $scope.accountHolder.service,
+			  	url: cfg.BACKEND_ADDRESS + '/user/get/' + $scope.accountHolder.extUserId + '/' + $scope.accountHolder.loginService,
 			  	dataType: 'json'
 			  }).then(function(response) {
 			  	console.log(response);
@@ -59,9 +59,8 @@ angular
 
 		$scope.ask = function() {
 			var askPackage = {
-				userId: $scope.accountHolder.userId,
 				token: $scope.accountHolder.token,
-				loginService: $scope.accountHolder.service,
+				loginService: $scope.accountHolder.loginService,
 				topic: $('#topic').val().trim(),
 				question: $('#question').val().trim()
 			}
@@ -71,7 +70,7 @@ angular
 			$http({
 			  	method: 'POST',
 			  	headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-			  	url: 'https://localhost:4567/question/add',
+			  	url: cfg.BACKEND_ADDRESS + '/question/add',
 			  	dataType: 'json',
 			  	data: {request: askPackage}
 			  }).then(function(response) {
@@ -101,8 +100,8 @@ angular
 			}
 
 			var request = {
-				userId: accountService.get().userId,
-				service: accountService.get().service,
+				token: accountService.get().token,
+				loginService: accountService.get().loginService,
 				topics: topics
 			}
 
@@ -178,8 +177,8 @@ angular
 				
 
 		function checkQuestions() {
-			var userId = $scope.accountHolder.userId;
-			var loginService = $scope.accountHolder.service;
+			var userId = $scope.accountHolder.extUserId;
+			var loginService = $scope.accountHolder.loginService;
 			var token = $scope.accountHolder.token;
 
 			$http.defaults.headers.post['dataType'] = 'json'
