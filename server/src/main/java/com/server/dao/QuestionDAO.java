@@ -1,5 +1,7 @@
 package com.server.dao;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -36,6 +38,62 @@ public class QuestionDAO {
 			manager.getTransaction().commit();
 		} catch (Exception e) {
 			logger.error("Error updating question: " + question.getQuestion());
+			manager.getTransaction().rollback();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Question> findExpiredQuestionsNotAccepted(long time) {
+		List<Question> questions = null;
+		try {
+			Query query = manager.createQuery("from Question where ttl < :time and responder is null");
+			query.setParameter("time", time);
+			questions = query.getResultList();
+		} catch (NoResultException e) {
+			logger.error("Error returning questions: ", e.getMessage());
+		} catch (Exception e) {
+			logger.error("Error returning questions: ", e);
+		}
+		
+		return questions;
+	}
+	
+	public void updateExpiredQuestionsNotAccepted(long time) {
+		manager.getTransaction().begin();
+		try {
+			Query query = manager.createQuery("update Question set ttl = 0, responder = null where ttl < :time and responder is null");
+			query.setParameter("time", time);
+			query.executeUpdate();
+		} catch (Exception e) {
+			logger.error("Error updating expired questions: ", e.getMessage());
+			manager.getTransaction().rollback();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Question> findExpiredQuestionsAccepted(long time) {
+		List<Question> questions = null;
+		try {
+			Query query = manager.createQuery("from Question where ttl < :time and responder is not null");
+			query.setParameter("time", time);
+			questions = query.getResultList();
+		} catch (NoResultException e) {
+			logger.error("Error returning questions: ", e.getMessage());
+		} catch (Exception e) {
+			logger.error("Error returning questions: ", e);
+		}
+		
+		return questions;
+	}
+	
+	public void updateExpiredQuestionsAccepted(long time) {
+		manager.getTransaction().begin();
+		try {
+			Query query = manager.createQuery("update Question set ttl = 0, responder = null where ttl < :time and responder is not null");
+			query.setParameter("time", time);
+			query.executeUpdate();
+		} catch (Exception e) {
+			logger.error("Error updating expired questions: ", e.getMessage());
 			manager.getTransaction().rollback();
 		}
 	}
