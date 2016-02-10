@@ -177,17 +177,24 @@ angular
 				
 
 		function checkQuestions() {
-			var userId = $scope.accountHolder.extUserId;
+			var extUserId = $scope.accountHolder.extUserId;
 			var loginService = $scope.accountHolder.loginService;
 			var token = $scope.accountHolder.token;
+
+			var request = {
+				topic: 'java',
+				token: token,
+				loginService: accountService.get().loginService
+			}
 
 			$http.defaults.headers.post['dataType'] = 'json'
 
 			$http({
-			  	method: 'GET',
+			  	method: 'POST',
 			  	headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-			  	url: 'https://localhost:4567/question/find/' + userId + '/' + token + '/' + loginService + '/java',
-			  	dataType: 'json'
+			  	url: cfg.BACKEND_ADDRESS + '/question/find',
+			  	dataType: 'json',
+			  	data: {request: request}
 			  }).then(function(response) {
 			  		console.log('find');
 			  		console.log(response);

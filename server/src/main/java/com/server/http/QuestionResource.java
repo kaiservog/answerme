@@ -84,7 +84,7 @@ public class QuestionResource extends Resource {
 				String questionId = getJedisClient().getJedis().rpop(topicString);
 				if (questionId != null) {
 					Question question = questionController.find(Integer.valueOf(questionId));
-					User responder = userController.get(token, loginService);
+					User responder = userController.getById(getUserId(token, loginService));
 					if(question.getQuerist().equals(responder)) {
 						jsonResponseMessage.put("message", "notFound");
 						getJedisClient().getJedis().rpush(topicString, questionId);
