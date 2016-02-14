@@ -116,14 +116,14 @@ public class QuestionResource extends Resource {
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				String tokenString = jsonRequest.getString("token");
+				String token = jsonRequest.getString("token");
 				String loginService = jsonRequest.getString("loginService");
-				String questionId = jsonRequest.getString("questionId");
+				Integer questionId = jsonRequest.getInt("questionId");
 				
 				if (questionId != null) {
-					Question question = questionController.find(Integer.valueOf(questionId));
+					Question question = questionController.find(questionId);
 					if (question.getResponder() == null) {
-						question.setResponder(userController.get(tokenString, loginService));
+						question.setResponder(userController.getById(getUserId(token, loginService)));
 						question.setTtl(System.currentTimeMillis());
 						questionController.update(question);
 
@@ -150,10 +150,10 @@ public class QuestionResource extends Resource {
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				String questionId = jsonRequest.getString("questionId");
+				Integer questionId = jsonRequest.getInt("questionId");
 				
 				if (questionId != null) {
-					Question question = questionController.find(Integer.valueOf(questionId));
+					Question question = questionController.find(questionId);
 					if (question != null && question.getResponder() == null) {
 						question.setTtl(0);
 						questionController.update(question);
@@ -183,16 +183,16 @@ public class QuestionResource extends Resource {
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				String tokenString = jsonRequest.getString("token");
+				String token = jsonRequest.getString("token");
 				String loginService = jsonRequest.getString("loginService");
-				String questionId = jsonRequest.getString("questionId");
+				Integer questionId = jsonRequest.getInt("questionId");
 				String answer = jsonRequest.getString("answer");
 				
 				if (questionId != null) {
-					Question question = questionController.find(Integer.valueOf(questionId));
+					Question question = questionController.find(questionId);
 					// TODO: MELHORAR COMPARACAO USER
-					if (question.getResponder() != null && question.getResponder().getExternalUserId().equals(tokenString) &&  
-							question.getResponder().getLoginService().equals(loginService)) {
+					if (question.getResponder() != null && 
+							Long.valueOf(getUserId(token, loginService)).equals(question.getResponder().getId())) {
 						question.setTtl(0);
 						question.setAnswer(answer);
 						questionController.update(question);

@@ -20,7 +20,7 @@
 					  {{topic}}
 					  <div class="row" >
 						<div class="col-sm-6">	
-							<p><a class="btn btn-primary btn-lg" id="bt-answer" role="button" ng-click="appendAnswer();">Answer</a></p>
+							<p><a class="btn btn-primary btn-lg" id="bt-answer" role="button" ng-click="accept();">Answer</a></p>
 						</div>
 
 						<div class="col-sm-6">	
@@ -33,13 +33,13 @@
 							<div class="col-sm-12">	
 								<div class="form-group">
 									<label for="comment">Answer:</label>
-									<textarea class="form-control" rows="5" id="comment"></textarea>
+									<textarea id="answer-text"class="form-control" rows="5" id="comment"></textarea>
 								</div>
 							</div>
 
 							<div class="col-sm-12">	
 								<div class="form-group">
-									<a class="btn btn-info btn-lg" href="#" role="button">Answer</a>
+									<a class="btn btn-info btn-lg" ng-click="answer();" role="button">Answer</a>
 								</div>
 							</div>
 

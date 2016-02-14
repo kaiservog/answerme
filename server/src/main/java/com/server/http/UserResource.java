@@ -72,7 +72,7 @@ public class UserResource extends Resource {
 				String userId = request.params(":userid");
 				String loginService = request.params(":loginService");
 
-				User user = userController.get(userId, loginService);
+				User user = userController.getByExternalUserId(userId, loginService);
 				jsonResponseMessage.put("user", new JSONObject(gson.toJson(user)));
 
 			} catch (Exception e) {

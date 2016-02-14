@@ -13,10 +13,6 @@ public class UserController {
     	return userDAO.add(user);
     }
     
-    public User get(String externalUserId, String loginService) {
-    	return userDAO.findByExternalUserId(externalUserId, loginService);
-    }
-    
     public User getByExternalUserId(String externalUserId, String loginService) {
     	return userDAO.findByExternalUserId(externalUserId, loginService);
     }

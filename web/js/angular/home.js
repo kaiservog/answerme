@@ -201,7 +201,8 @@ angular
 			  		if(response.data.response.message=='ok') {
 			  			questionService.set({
 			  				topic: response.data.response.question.topic,
-			  				question: response.data.response.question.question
+			  				question: response.data.response.question.question,
+			  				id : response.data.response.question.id
 
 			  			});
 			  			clearInterval(checkId);
