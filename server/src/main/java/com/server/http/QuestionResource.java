@@ -22,9 +22,6 @@ public class QuestionResource extends Resource {
 	private static final Logger logger = LoggerFactory.getLogger(QuestionResource.class);
 
 	@Inject
-	private UserController userController;
-	
-	@Inject
 	private TopicController topicController;
 	
 	@Inject
@@ -40,8 +37,6 @@ public class QuestionResource extends Resource {
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				String token = jsonRequest.getString("token");
-				String loginService = jsonRequest.getString("loginService");
 				String questionString = jsonRequest.getString("question");
 				String topicString = jsonRequest.getString("topic");
 				
@@ -52,9 +47,7 @@ public class QuestionResource extends Resource {
 					topicController.add(topic);
 				}
 				
-				String userId = getUserId(token, loginService);
-				User querist = userController.getById(userId);
-				
+				User querist = getResquestedUser(jsonRequest);
 				Question question = new Question(querist, null, topic, questionString, null, 0);
 				questionController.add(question);
 				
@@ -84,7 +77,7 @@ public class QuestionResource extends Resource {
 				String questionId = getJedisClient().getJedis().rpop(topicString);
 				if (questionId != null) {
 					Question question = questionController.find(Integer.valueOf(questionId));
-					User responder = userController.getById(getUserId(token, loginService));
+					User responder = getResquestedUser(jsonRequest);
 					if(question.getQuerist().equals(responder)) {
 						jsonResponseMessage.put("message", "notFound");
 						getJedisClient().getJedis().rpush(topicString, questionId);
@@ -116,14 +109,12 @@ public class QuestionResource extends Resource {
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				String token = jsonRequest.getString("token");
-				String loginService = jsonRequest.getString("loginService");
 				Integer questionId = jsonRequest.getInt("questionId");
 				
 				if (questionId != null) {
 					Question question = questionController.find(questionId);
 					if (question.getResponder() == null) {
-						question.setResponder(userController.getById(getUserId(token, loginService)));
+						question.setResponder(getResquestedUser(jsonRequest));
 						question.setTtl(System.currentTimeMillis());
 						questionController.update(question);
 

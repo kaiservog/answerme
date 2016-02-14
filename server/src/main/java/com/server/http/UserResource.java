@@ -28,8 +28,7 @@ public class UserResource extends Resource {
 
 	@Inject
 	private TokenValidatorFactory tokenValidatorFactory;
-	@Inject
-	private UserController userController;
+
 	@Inject
 	private TopicController topicController;
 	
@@ -41,18 +40,14 @@ public class UserResource extends Resource {
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-
-				String token = jsonRequest.getString("token");
-				String loginService = jsonRequest.getString("loginService");
 				String topicsRaw = jsonRequest.getString("topics");
 				
-				String userId = getUserId(token, loginService);
-				User user = userController.getById(userId);
+				User user = getResquestedUser(jsonRequest);
 				List<String> topicsList = Arrays.asList(topicsRaw.split(" "));
 				List<Topic> topics = topicController.findOrPersist(topicsList);
 				
 				user.setTopics(topics);
-				userController.persist(user);
+				getUserController().persist(user);
 				
 				jsonResponseMessage.put("message", "ok");
 
@@ -72,7 +67,7 @@ public class UserResource extends Resource {
 				String userId = request.params(":userid");
 				String loginService = request.params(":loginService");
 
-				User user = userController.getByExternalUserId(userId, loginService);
+				User user = getUserController().getByExternalUserId(userId, loginService);
 				jsonResponseMessage.put("user", new JSONObject(gson.toJson(user)));
 
 			} catch (Exception e) {
@@ -92,7 +87,7 @@ public class UserResource extends Resource {
 				String loginService = request.params(":loginService");
 				
 				String userId = getUserId(token, loginService);
-				User user = userController.getById(Long.valueOf(userId));
+				User user = getUserController().getById(Long.valueOf(userId));
 				jsonResponseMessage.put("user", new JSONObject(gson.toJson(user)));
 
 			} catch (Exception e) {
@@ -120,12 +115,12 @@ public class UserResource extends Resource {
 				logger.info("check user: " + name + " userId: " + extUserId + " token: " + token + " service " + loginService + " client " + client);
 				
 				if(tokenValidatorFactory.get(loginService, token, extUserId).validate()) {
-					User user = userController.getByExternalUserId(extUserId, loginService);
+					User user = getUserController().getByExternalUserId(extUserId, loginService);
 					if(user != null) {
 						jsonResponseMessage.put("message", "ok");
 						tokenRegister(user.getId(), extUserId, loginService, token);
 					}else {
-						user = userController.add(new User(extUserId, loginService, name));
+						user = getUserController().add(new User(extUserId, loginService, name));
 						tokenRegister(user.getId(), extUserId, loginService, token);
 						jsonResponseMessage.put("message", "firstlogin");
 					}
