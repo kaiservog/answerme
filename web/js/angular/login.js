@@ -45,15 +45,14 @@ angular
 	$scope.statusChangeCallback = function (response) {
 		if (response.status === 'connected') {
 		  var name = '';
-		  var account = createAccount(undefined, response.authResponse.userID, response.authResponse.accessToken, 'fb');
+		  var account = createAccount('', response.authResponse.userID, response.authResponse.accessToken, 'fb');
 
 		  FB.api('/me', function(response) {
 			account.name = response.name 
 			});
 
 		  accountService.set(account);
-		  $location.path("/home");
-		  $scope.$apply();
+		  signin(account);
 		}
 	}
 	

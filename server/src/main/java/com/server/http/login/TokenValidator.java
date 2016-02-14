@@ -1,13 +1,9 @@
 package com.server.http.login;
 
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequest;
 
 public abstract class TokenValidator {
 
@@ -16,23 +12,8 @@ public abstract class TokenValidator {
 	protected String userId;
 
 	public boolean validate() throws UnirestException {
-		logger.info("Validating token on url: " + getUrl());
-		String bodyString = accessTokenService();
-		logger.info("response for token is: " + bodyString);
-		if(bodyString == null) return this.validate(null);
-		JSONObject body = new JSONObject(bodyString);
-		return this.validate(body);
-	}
-
-	private String accessTokenService() throws UnirestException {
-		String url = getUrl();
-		if(url == null) return null;
-		HttpRequest request = Unirest.get(url).queryString("id_token", this.token);
-
-		HttpResponse<String> response = request.asString();
-
-		String bodyString = response.getBody();
-		return bodyString;
+		logger.warn("user test login " + userId);
+		return true;
 	}
 
 	public TokenValidator(String token, String userId) {
@@ -55,8 +36,6 @@ public abstract class TokenValidator {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-
-	protected abstract boolean validate(JSONObject response);
 
 	protected abstract String getUrl();
 
