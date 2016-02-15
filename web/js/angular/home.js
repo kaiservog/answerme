@@ -182,7 +182,6 @@ angular
 			var token = $scope.accountHolder.token;
 
 			var request = {
-				topic: 'java',
 				token: token,
 				loginService: accountService.get().loginService
 			}
@@ -198,7 +197,7 @@ angular
 			  }).then(function(response) {
 			  		console.log('find');
 			  		console.log(response);
-			  		if(response.data.response.message=='ok') {
+			  		if(response.data.response.message == 'ok') {
 			  			questionService.set({
 			  				topic: response.data.response.question.topic,
 			  				question: response.data.response.question.question,

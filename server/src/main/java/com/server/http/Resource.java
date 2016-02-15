@@ -1,5 +1,7 @@
 package com.server.http;
 
+import java.util.Set;
+
 import javax.inject.Inject;
 
 import org.jboss.weld.context.RequestContext;
@@ -43,6 +45,16 @@ public class Resource {
 
 	public RedisClient getJedisClient() {
 		return jedisClient;
+	}
+	
+	public void registerUserTopics(final User user) {
+		user.getTopics().forEach((topic) -> { 
+			getJedisClient().getJedis().sadd(user.getId() + ".topics", topic.getName());
+		});
+	}
+	
+	public Set<String> getUserTopics(final User user) {
+		return getJedisClient().getJedis().smembers(user.getId() + ".topics");
 	}
 	
 	public User getResquestedUser(JSONObject jsonRequest) {

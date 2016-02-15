@@ -53,6 +53,24 @@ public class Question implements Serializable {
 		this.ttl = ttl;
 	}
 
+	public void accept(User user) {
+		this.setResponder(user);
+		this.setTtl(System.currentTimeMillis());
+	}
+	
+	public void reject() {
+		this.setTtl(0);
+	}
+	
+	public void answer(String answer) {
+		this.setTtl(0);
+		this.setAnswer(answer);
+	}
+	
+	public void resetTtl() {
+		this.setTtl(System.currentTimeMillis());
+	}
+	
 	public int getId() {
 		return id;
 	}

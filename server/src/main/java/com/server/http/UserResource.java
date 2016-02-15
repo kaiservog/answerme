@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.server.controller.TopicController;
-import com.server.controller.UserController;
 import com.server.http.login.TokenValidatorFactory;
 import com.server.model.Topic;
 import com.server.model.User;
@@ -48,11 +47,12 @@ public class UserResource extends Resource {
 				
 				user.setTopics(topics);
 				getUserController().persist(user);
+				registerUserTopics(user);
 				
 				jsonResponseMessage.put("message", "ok");
 
 			} catch (Exception e) {
-				logger.error("Error in request /add", e);
+				logger.error("Error in request /user/update", e);
 				jsonResponseMessage.put("message", "error");
 			}
 			jsonResponse.put("response", jsonResponseMessage);
@@ -115,13 +115,15 @@ public class UserResource extends Resource {
 				logger.info("check user: " + name + " userId: " + extUserId + " token: " + token + " service " + loginService + " client " + client);
 				
 				if(tokenValidatorFactory.get(loginService, token, extUserId).validate()) {
-					User user = getUserController().getByExternalUserId(extUserId, loginService);
+					final User user = getUserController().getByExternalUserId(extUserId, loginService);
+					
 					if(user != null) {
 						jsonResponseMessage.put("message", "ok");
 						tokenRegister(user.getId(), extUserId, loginService, token);
+						registerUserTopics(user);
 					}else {
-						user = getUserController().add(new User(extUserId, loginService, name));
-						tokenRegister(user.getId(), extUserId, loginService, token);
+						User registerUser = getUserController().add(new User(extUserId, loginService, name));
+						tokenRegister(registerUser.getId(), extUserId, loginService, token);
 						jsonResponseMessage.put("message", "firstlogin");
 					}
 				}else {

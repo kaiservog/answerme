@@ -70,19 +70,25 @@ public class QuestionResource extends Resource {
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				String topicString = jsonRequest.getString("topic");
-				String token = jsonRequest.getString("token");
-				String loginService = jsonRequest.getString("loginService");
-
-				String questionId = getJedisClient().getJedis().rpop(topicString);
+				User user = getResquestedUser(jsonRequest);
+				
+				String questionId = null;
+				String topicFounded = null;
+				
+				for(String topic : getUserTopics(user)) {
+					questionId = getJedisClient().getJedis().rpop(topic);
+					topicFounded = topic;
+					if(questionId != null) break;
+				}
+				
 				if (questionId != null) {
 					Question question = questionController.find(Integer.valueOf(questionId));
 					User responder = getResquestedUser(jsonRequest);
 					if(question.getQuerist().equals(responder)) {
+						getJedisClient().getJedis().rpush(topicFounded, questionId);
 						jsonResponseMessage.put("message", "notFound");
-						getJedisClient().getJedis().rpush(topicString, questionId);
 					}else {
-						question.setTtl(System.currentTimeMillis());
+						question.resetTtl();
 						questionController.update(question);
 						
 						jsonResponseMessage.put("message", "ok");
@@ -111,23 +117,18 @@ public class QuestionResource extends Resource {
 				JSONObject jsonRequest = obj.getJSONObject("request");
 				Integer questionId = jsonRequest.getInt("questionId");
 				
-				if (questionId != null) {
-					Question question = questionController.find(questionId);
-					if (question.getResponder() == null) {
-						question.setResponder(getResquestedUser(jsonRequest));
-						question.setTtl(System.currentTimeMillis());
-						questionController.update(question);
+				Question question = questionController.find(questionId);
+				if (question.getResponder() == null) {
+					question.accept(getResquestedUser(jsonRequest));
+					questionController.update(question);
 
-						jsonResponseMessage.put("message", "ok");	
-					} else {
-						jsonResponseMessage.put("message", "question expired");
-					}
+					jsonResponseMessage.put("message", "ok");	
 				} else {
-					jsonResponseMessage.put("message", "invalid questionId");
+					jsonResponseMessage.put("message", "question expired");
 				}
 
 			} catch (Exception e) {
-				logger.error("Error in request /find", e);
+				logger.error("Error in request /question/accept", e);
 				jsonResponseMessage.put("message", "error");
 			}
 			jsonResponse.put("response", jsonResponseMessage);
@@ -143,24 +144,20 @@ public class QuestionResource extends Resource {
 				JSONObject jsonRequest = obj.getJSONObject("request");
 				Integer questionId = jsonRequest.getInt("questionId");
 				
-				if (questionId != null) {
-					Question question = questionController.find(questionId);
-					if (question != null && question.getResponder() == null) {
-						question.setTtl(0);
-						questionController.update(question);
-						getJedisClient().getJedis().lpush(question.getTopic().getName(), String.valueOf(question.getId()));
-						
-						jsonResponseMessage.put("message", "ok");
-					} else {
-						jsonResponseMessage.put("message", "question expired");
-					}
+				Question question = questionController.find(questionId);
+				if (question != null && question.getResponder() == null) {
+					question.reject();
+					questionController.update(question);
+					getJedisClient().getJedis().lpush(question.getTopic().getName(), String.valueOf(question.getId()));
+					
+					jsonResponseMessage.put("message", "ok");
 				} else {
-					jsonResponseMessage.put("message", "notFound");					
+					jsonResponseMessage.put("message", "question expired");
 				}
 				
 				jsonResponseMessage.put("next", 2000L);
 			} catch (Exception e) {
-				logger.error("Error in request /find", e);
+				logger.error("Error in request /question/reject", e);
 				jsonResponseMessage.put("message", "error");
 			}
 			jsonResponse.put("response", jsonResponseMessage);
@@ -179,25 +176,21 @@ public class QuestionResource extends Resource {
 				Integer questionId = jsonRequest.getInt("questionId");
 				String answer = jsonRequest.getString("answer");
 				
-				if (questionId != null) {
-					Question question = questionController.find(questionId);
-					// TODO: MELHORAR COMPARACAO USER
-					if (question.getResponder() != null && 
-							Long.valueOf(getUserId(token, loginService)).equals(question.getResponder().getId())) {
-						question.setTtl(0);
-						question.setAnswer(answer);
-						questionController.update(question);
+				Question question = questionController.find(questionId);
+				// TODO: MELHORAR COMPARACAO USER
+				if (question.getResponder() != null && 
+						Long.valueOf(getUserId(token, loginService)).equals(question.getResponder().getId())) {
+					
+					question.answer(answer);
+					questionController.update(question);
 
-						jsonResponseMessage.put("message", "ok");
-					} else {
-						jsonResponseMessage.put("message", "question expired");
-					}
+					jsonResponseMessage.put("message", "ok");
 				} else {
-					jsonResponseMessage.put("message", "invalid questionId");
+					jsonResponseMessage.put("message", "question expired");
 				}
 
 			} catch (Exception e) {
-				logger.error("Error in request /find", e);
+				logger.error("Error in request /question/answer", e);
 				jsonResponseMessage.put("message", "error");
 			}
 			jsonResponse.put("response", jsonResponseMessage);
