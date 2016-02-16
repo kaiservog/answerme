@@ -41,7 +41,7 @@ public class UserResource extends Resource {
 				JSONObject jsonRequest = obj.getJSONObject("request");
 				String topicsRaw = jsonRequest.getString("topics");
 				
-				User user = getResquestedUser(jsonRequest);
+				User user = getRequestedUser(jsonRequest);
 				List<String> topicsList = Arrays.asList(topicsRaw.split(" "));
 				List<Topic> topics = topicController.findOrPersist(topicsList);
 				

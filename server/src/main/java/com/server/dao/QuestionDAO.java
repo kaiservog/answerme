@@ -100,7 +100,7 @@ public class QuestionDAO {
 		}
 	}
 	
-	public Question find(Integer questionId) {
+	public Question find(Long questionId) {
 		Question question = null;
 		try {
 			question = manager.find(Question.class, questionId);

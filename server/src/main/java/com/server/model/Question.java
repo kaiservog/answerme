@@ -22,7 +22,7 @@ public class Question implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "question_seq")
 	@Column(name = "id_question", unique = true, insertable = false, updatable = false)
-	private int id;
+	private long id;
 	
 	@OneToOne()
 	@JoinColumn(name = "querist")
@@ -71,11 +71,11 @@ public class Question implements Serializable {
 		this.setTtl(System.currentTimeMillis());
 	}
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

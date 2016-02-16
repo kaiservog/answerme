@@ -16,7 +16,7 @@ public class QuestionController {
     	questionDao.add(question);
     }
     
-    public Question find(Integer questionId) {
+    public Question find(Long questionId) {
     	return questionDao.find(questionId);
     }
     

@@ -198,15 +198,26 @@ angular
 			  		console.log('find');
 			  		console.log(response);
 			  		if(response.data.response.message == 'ok') {
-			  			questionService.set({
-			  				topic: response.data.response.question.topic,
-			  				question: response.data.response.question.question,
-			  				id : response.data.response.question.id
+			  			if(response.data.response.type == 'question') {
+				  			questionService.set({
+				  				topic: response.data.response.question.topic,
+				  				question: response.data.response.question.question,
+				  				id : response.data.response.question.id
 
-			  			});
-			  			clearInterval(checkId);
-						clearInterval(hiderId);
-			  			$location.path('/answer');
+				  			});
+				  			clearInterval(checkId);
+							clearInterval(hiderId);
+				  			$location.path('/answer');
+				  		}else {
+
+				  			$scope.answer = {
+				  				topic: response.data.response.answer.topic,
+				  				question : response.data.response.answer.question,
+				  				answer : response.data.response.answer.answer
+				  			}
+
+				  			$('#answer-modal').modal('show');
+				  		}
 			  		}
 			  		if(response.data.response.message == 'notFound') {
 						$scope.delay = response.data.response.next;

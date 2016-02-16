@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import com.server.conf.RedisClient;
 import com.server.controller.UserController;
+import com.server.model.Question;
 import com.server.model.User;
 
 public class Resource {
@@ -57,7 +58,17 @@ public class Resource {
 		return getJedisClient().getJedis().smembers(user.getId() + ".topics");
 	}
 	
-	public User getResquestedUser(JSONObject jsonRequest) {
+	public void registerUserAnsweredQuestion(long userQueristId, long questionId) {
+		getJedisClient().getJedis().lpush(userQueristId + ".answered_question", String.valueOf(questionId));
+	}
+	
+	public Long getUserAnsweredQuestion(long userQueristId) {
+		String r = getJedisClient().getJedis().rpop(userQueristId + ".answered_question");
+		if(r == null) return null;
+		return Long.valueOf(r);
+	}
+	
+	public User getRequestedUser(JSONObject jsonRequest) {
 		String token = jsonRequest.getString("token");
 		String loginService = jsonRequest.getString("loginService");
 		

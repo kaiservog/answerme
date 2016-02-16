@@ -2,16 +2,20 @@ package com.server.http;
 
 import static spark.Spark.post;
 
+
 import javax.inject.Inject;
+
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 import com.google.gson.Gson;
 import com.server.controller.QuestionController;
 import com.server.controller.TopicController;
 import com.server.controller.UserController;
+import com.server.model.AnswerView;
 import com.server.model.Question;
 import com.server.model.QuestionView;
 import com.server.model.Topic;
@@ -41,13 +45,14 @@ public class QuestionResource extends Resource {
 				String topicString = jsonRequest.getString("topic");
 				
 				logger.info("Question add " + questionString);
+				
 				Topic topic = topicController.findByName(topicString);
 				if (topic == null) {
 					topic = new Topic(topicString);
 					topicController.add(topic);
 				}
 				
-				User querist = getResquestedUser(jsonRequest);
+				User querist = getRequestedUser(jsonRequest);
 				Question question = new Question(querist, null, topic, questionString, null, 0);
 				questionController.add(question);
 				
@@ -63,14 +68,28 @@ public class QuestionResource extends Resource {
 			return jsonResponse;
 		});
 		
+		//TODO vai ter que quebrar este metodo
 		post("/question/find", (request, response) -> {
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();
+			
+			jsonResponseMessage.put("next", 2000L);
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				User user = getResquestedUser(jsonRequest);
+				User user = getRequestedUser(jsonRequest);
+				
+				Long answeredQuestionId = getUserAnsweredQuestion(user.getId());
+				
+				if(answeredQuestionId != null) {
+					Question answeredQuestion = questionController.find(answeredQuestionId);
+					jsonResponseMessage.put("message", "ok");
+					jsonResponseMessage.put("type", "answer");
+					jsonResponseMessage.put("answer", new JSONObject(gson.toJson(new AnswerView(answeredQuestion))));
+					jsonResponse.put("response", jsonResponseMessage);
+					return jsonResponse;
+				}
 				
 				String questionId = null;
 				String topicFounded = null;
@@ -82,8 +101,8 @@ public class QuestionResource extends Resource {
 				}
 				
 				if (questionId != null) {
-					Question question = questionController.find(Integer.valueOf(questionId));
-					User responder = getResquestedUser(jsonRequest);
+					Question question = questionController.find(Long.valueOf(questionId));
+					User responder = getRequestedUser(jsonRequest);
 					if(question.getQuerist().equals(responder)) {
 						getJedisClient().getJedis().rpush(topicFounded, questionId);
 						jsonResponseMessage.put("message", "notFound");
@@ -92,14 +111,12 @@ public class QuestionResource extends Resource {
 						questionController.update(question);
 						
 						jsonResponseMessage.put("message", "ok");
+						jsonResponseMessage.put("type", "question");
 						jsonResponseMessage.put("question", new JSONObject(gson.toJson(new QuestionView(question))));
 					}
 				} else {
 					jsonResponseMessage.put("message", "notFound");
 				}
-
-				jsonResponseMessage.put("next", 2000L);
-
 			} catch (Exception e) {
 				logger.error("Error in request /find", e);
 				jsonResponseMessage.put("message", "error");
@@ -115,11 +132,11 @@ public class QuestionResource extends Resource {
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				Integer questionId = jsonRequest.getInt("questionId");
+				Long questionId = jsonRequest.getLong("questionId");
 				
 				Question question = questionController.find(questionId);
 				if (question.getResponder() == null) {
-					question.accept(getResquestedUser(jsonRequest));
+					question.accept(getRequestedUser(jsonRequest));
 					questionController.update(question);
 
 					jsonResponseMessage.put("message", "ok");	
@@ -142,7 +159,7 @@ public class QuestionResource extends Resource {
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				Integer questionId = jsonRequest.getInt("questionId");
+				Long questionId = jsonRequest.getLong("questionId");
 				
 				Question question = questionController.find(questionId);
 				if (question != null && question.getResponder() == null) {
@@ -173,7 +190,7 @@ public class QuestionResource extends Resource {
 				JSONObject jsonRequest = obj.getJSONObject("request");
 				String token = jsonRequest.getString("token");
 				String loginService = jsonRequest.getString("loginService");
-				Integer questionId = jsonRequest.getInt("questionId");
+				Long questionId = jsonRequest.getLong("questionId");
 				String answer = jsonRequest.getString("answer");
 				
 				Question question = questionController.find(questionId);
@@ -183,6 +200,7 @@ public class QuestionResource extends Resource {
 					
 					question.answer(answer);
 					questionController.update(question);
+					registerUserAnsweredQuestion(question.getQuerist().getId(), question.getId());
 
 					jsonResponseMessage.put("message", "ok");
 				} else {
