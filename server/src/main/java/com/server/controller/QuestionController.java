@@ -27,7 +27,8 @@ public class QuestionController {
     public List<Question> updateExpiredQuestions() {
     	List<Question> expiredQuestions = new ArrayList<>();
     	
-    	long time = System.currentTimeMillis() - 120000;
+    	//TODO:PARAMETRIZAR VALORES
+    	long time = System.currentTimeMillis() - 30000;
     	expiredQuestions = questionDao.findExpiredQuestionsNotAccepted(time);
     	questionDao.updateExpiredQuestionsNotAccepted(time);
     	

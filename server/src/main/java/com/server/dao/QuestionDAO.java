@@ -46,7 +46,7 @@ public class QuestionDAO {
 	public List<Question> findExpiredQuestionsNotAccepted(long time) {
 		List<Question> questions = null;
 		try {
-			Query query = manager.createQuery("from Question where ttl < :time and responder is null");
+			Query query = manager.createQuery("from Question where ttl != 0 and ttl < :time and responder is null");
 			query.setParameter("time", time);
 			questions = query.getResultList();
 		} catch (NoResultException e) {
@@ -61,7 +61,7 @@ public class QuestionDAO {
 	public void updateExpiredQuestionsNotAccepted(long time) {
 		manager.getTransaction().begin();
 		try {
-			Query query = manager.createQuery("update Question set ttl = 0, responder = null where ttl < :time and responder is null");
+			Query query = manager.createQuery("update Question set ttl = 0, responder = null where ttl != 0 and ttl < :time and responder is null");
 			query.setParameter("time", time);
 			query.executeUpdate();
 			manager.getTransaction().commit();
@@ -75,7 +75,7 @@ public class QuestionDAO {
 	public List<Question> findExpiredQuestionsAccepted(long time) {
 		List<Question> questions = null;
 		try {
-			Query query = manager.createQuery("from Question where ttl < :time and responder is not null");
+			Query query = manager.createQuery("from Question where ttl != 0 and ttl < :time and responder is not null");
 			query.setParameter("time", time);
 			questions = query.getResultList();
 		} catch (NoResultException e) {
@@ -90,7 +90,7 @@ public class QuestionDAO {
 	public void updateExpiredQuestionsAccepted(long time) {
 		manager.getTransaction().begin();
 		try {
-			Query query = manager.createQuery("update Question set ttl = 0, responder = null where ttl < :time and responder is not null");
+			Query query = manager.createQuery("update Question set ttl = 0, responder = null where ttl != 0 and ttl < :time and responder is not null");
 			query.setParameter("time", time);
 			query.executeUpdate();
 			manager.getTransaction().commit();

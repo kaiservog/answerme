@@ -3,7 +3,7 @@ angular
 	.controller('answerController', ['$scope', '$http', '$location', '$interval', 'accountService', 'questionService', 'accountService', 'cfg',
 		function($scope, $http, $location, $interval, accountService, questionService, accountService, cfg) {
 		$scope.appendAnswer = function() {
-			$interval.cancel($scope.answerTimeout);
+			$interval.cancel($scope.acceptTimeout);
 			$('#answer').removeClass('ng-hide');
 			$('#bt-answer').addClass('hidden');
 			$('#bt-ignore').addClass('hidden');
@@ -11,12 +11,14 @@ angular
 			$scope.countering = function() {
 				$scope.counter--;			
 			}
-			$scope.counteringId = $interval($scope.countering, 1000);
+			$scope.counteringId = $interval($scope.countering, 60000);
 
-			var timeout = setTimeout($scope.goHome, 15000);
+			var timeout = setTimeout($scope.goHome, 900000);
 		}
 
 		$scope.accept = function() {
+			$interval.cancel($scope.acceptTimeout);
+			$('#clockAccept').addClass('hidden');
 			$http.defaults.headers.post['dataType'] = 'json'
 
 			var request = {
@@ -40,6 +42,7 @@ angular
 		}
 
 		$scope.reject = function() {
+			$interval.cancel($scope.acceptTimeout);
 			$http.defaults.headers.post['dataType'] = 'json'
 
 			var request = {
@@ -88,6 +91,7 @@ angular
 
 		$scope.goHome = function() {
 			if($scope.counteringId != undefined) $interval.cancel($scope.counterId);
+			$interval.cancel($scope.acceptTimeout);
 			$location.path('/home');
 		}
 
@@ -95,7 +99,13 @@ angular
 		$scope.accountHolder = accountService.get();
 
 		$scope.counter = 15;
-		$scope.answerTimeout = $interval($scope.goHome, 5000, 1);
+
+		$scope.counterAccept = 30;
+		$scope.counteringAccept = function() {
+			$scope.counterAccept--;
+		}
+		$scope.counteringAcceptId = $interval($scope.counteringAccept, 1000);
+		$scope.acceptTimeout = $interval($scope.goHome, 30000, 1);
 
 
 

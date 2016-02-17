@@ -2,19 +2,15 @@ package com.server.http;
 
 import static spark.Spark.post;
 
-
 import javax.inject.Inject;
-
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import com.google.gson.Gson;
 import com.server.controller.QuestionController;
 import com.server.controller.TopicController;
-import com.server.controller.UserController;
 import com.server.model.AnswerView;
 import com.server.model.Question;
 import com.server.model.QuestionView;

@@ -1,7 +1,7 @@
 <div>
 	<div class="container-fluid special">
 		<nav class="navbar navbar-static-top navbar-dark navbar-inverse" style="background-color: #222222;">
-		  <a class="navbar-brand" href>#Answerme</a>
+		  <a class="navbar-brand" href="#/home">#Answerme</a>
 		  <ul class="nav navbar-nav">
 				<li><a href ng-click="updateModalShow();" > {{accountHolder.name}} <span class="badge">42</span></a></li>
 				<li><a href data-target="#works-modal" data-toggle="modal" >How it's works</a></li>
@@ -14,8 +14,10 @@
 		  <div class="col-md-8 col-md-offset-2">
 			<div class="panel panel-default">
 			  <div class="panel-body">
-					<div class="row" style="margin-top:50px; margin-bottom:50px;">
-						<div class="col-sm-3">	
+					<div class="row" style="margin-top:20px; margin-bottom:20px; margin-left:auto; margin-right:auto">
+						  <h3>Make a question!</h3>
+						</div>
+						<div class="col-sm-3">
 							<div class="input-group">
 							  <span class="input-group-addon" id="basic-addon1">#</span>
 							  <input id="topic" type="text" class="form-control" placeholder="Topic" aria-describedby="basic-addon1" ng-keypress="jumpTopic($event);">

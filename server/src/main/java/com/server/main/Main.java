@@ -78,7 +78,7 @@ public class Main {
 	private void registerServices() throws SchedulerException {
 		JobDetail job = JobBuilder.newJob(QuestionTtlService.class).withIdentity("questionTtlServiceJob", "group1").build();
 		Trigger trigger = TriggerBuilder.newTrigger().withIdentity("questionTtlServiceTrigger", "group1").withSchedule(SimpleScheduleBuilder.simpleSchedule()
-			.withIntervalInSeconds(30).repeatForever()).build();
+			.withIntervalInSeconds(1).repeatForever()).build();
 		Scheduler scheduler = new StdSchedulerFactory().getScheduler();
 		scheduler.setJobFactory(cdiJobFactory);
 		scheduler.start();
