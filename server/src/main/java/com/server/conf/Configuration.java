@@ -4,43 +4,54 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class Configuration {
 	private static Properties props;
 
 	private Configuration() {
-
 	}
 
-	public static Properties load() throws IOException {
+	public Properties load() throws IOException {
 		props = new Properties();
 		FileInputStream file = new FileInputStream("/apl/conf.properties");
 		props.load(file);
 		return props;
 	}
 
-	public static boolean isSecureEnabled() {
-		return props.get("secure").equals("true");
+	public boolean isSecureEnabled() {
+		return getProps().get("secure").equals("true");
 	}
-	
-	public static String getCacheAddress() {
-		return (String) props.get("cache.address");
+
+	public String getCacheAddress() {
+		return (String) getProps().get("cache.address");
 	}
-	
-	public static Integer getCachePort() {
-		return Integer.valueOf((String) props.get("cache.port"));
+
+	public Integer getCachePort() {
+		return Integer.valueOf((String) getProps().get("cache.port"));
 	}
-	
-	public static String getKeyStorePath() {
-		return (String) props.get("keystore.dir");
+
+	public String getKeyStorePath() {
+		return (String) getProps().get("keystore.dir");
 	}
-	
-	public static String getKeyStorePass() {
-		//TODO adicionar criptografia
-		return (String) props.get("keystore.pass");
+
+	public String getKeyStorePass() {
+		// TODO adicionar criptografia
+		return (String) getProps().get("keystore.pass");
 	}
-	
-	public static String getStoredConfPath() {
-		return (String) props.get("store.conf.dir");
+
+	public String getStoredConfPath() {
+		return (String) getProps().get("store.conf.dir");
 	}
-	
+
+	private Properties getProps() {
+		try {
+			if(props == null) load();
+		}catch(IOException e) {
+			
+		}
+		return props;
+	}
+
 }

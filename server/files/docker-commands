@@ -1,0 +1,17 @@
+
+docker run --name a-nginx -v /path/to/web/:/usr/share/nginx/html:ro -p 8080:80 -d nginx
+
+docker run --name a-mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=test -p 3307:3306 -d mysql/mysql-server
+
+#open bash on docker
+docker exec -it my-container-name bash
+
+
+docker run -p 4567:4567 -it victorbalboa/answerme:tag /bin/bash
+
+#Redis listener port
+docker run -d --name a-redis -p 6379:6379 redis
+
+
+#otimo link com dicas de docker
+https://github.com/wsargent/docker-cheat-sheet

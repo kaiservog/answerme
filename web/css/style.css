@@ -53,9 +53,43 @@ html,body {
 
 .voffset1 { margin-top: 50px; }
 .loffset1 { margin-left: 30px; }
+.top5 { margin-top:5px; }
+.top7 { margin-top:7px; }
+.top10 { margin-top:10px; }
+.top15 { margin-top:15px; }
+.top17 { margin-top:17px; }
+.top30 { margin-top:30px; }
+.top60 { margin-top:60px; }
+.container-full {
+  margin: 0 auto;
+  width: 100%;
+}
 
+.container-half {
+  margin: 0 auto;
+  width: 50%;
+}
 
+.container-full {
+  margin: 1 auto;
+  width: 100%;
+}
 
+.button-limit {
+  margin: 1 auto;
+  max-width: 220px;
+  min-width: 220px;
+}
 
+.center {
+    text-align: center;
+}
 
+.borderless-login-button { 
+    border-bottom: none; 
+    border-top: none;
+}
 
+.clock {
+    text-align: right;
+}

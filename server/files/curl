@@ -1,0 +1,23 @@
+#################
+#	USER
+#################
+curl -XGET 'http://localhost:4567/user/get/:userid/fb'
+
+curl -XPOST 'http://localhost:4567/user/add' -d ' { "request": { "firstName": "Victor", "lastName": "Homsi Mora", "phone": "11983354385", "username": "usuario", "password": "senha" } }'
+
+
+#################
+#	QUESTION
+#################
+
+curl -XPOST 'http://localhost:4567/question/add' -d ' { "request": { "querist": "usuario", "question": "Melhor ide java", "topic": "java"} }'
+
+curl -XPOST 'http://localhost:4567/question/find' -d ' { "request": { "topic": "java" } }'
+
+curl -XPOST 'http://localhost:4567/question/accept' -d ' { "request": { "topic": "java" } }'
+
+
+######
+# TIPS
+######
+For HTTPS server use "curl -k"

@@ -3,58 +3,136 @@ package com.server.http;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.server.controller.UserController;
+import com.server.controller.TopicController;
+import com.server.http.login.TokenValidatorFactory;
+import com.server.model.Topic;
 import com.server.model.User;
 
-public class UserResource {
+public class UserResource extends Resource {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
 
 	private static final Gson gson = new Gson();
+	
 
-	public static void registerResource(UserController userController) {
-		post("/user/add", (request, response) -> {
+	@Inject
+	private TokenValidatorFactory tokenValidatorFactory;
+
+	@Inject
+	private TopicController topicController;
+	
+	public void registerResource() {
+		post("/user/update", (request, response) -> {
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();
 			try {
 				JSONObject obj = new JSONObject(request.body());
 				JSONObject jsonRequest = obj.getJSONObject("request");
-				String firstName = jsonRequest.getString("firstName");
-				String lastName = jsonRequest.getString("lastName");
-				String phone = jsonRequest.getString("phone");
-				String username = jsonRequest.getString("username");
-				String password = jsonRequest.getString("password");
-
-				userController.add(new User(firstName, lastName, phone, username, password));
+				String topicsRaw = jsonRequest.getString("topics");
+				
+				User user = getRequestedUser(jsonRequest);
+				List<String> topicsList = Arrays.asList(topicsRaw.split(" "));
+				List<Topic> topics = topicController.findOrPersist(topicsList);
+				
+				user.setTopics(topics);
+				getUserController().persist(user);
+				registerUserTopics(user);
+				
 				jsonResponseMessage.put("message", "ok");
 
 			} catch (Exception e) {
-				logger.error("Error in request /add", e);
+				logger.error("Error in request /user/update", e);
 				jsonResponseMessage.put("message", "error");
 			}
 			jsonResponse.put("response", jsonResponseMessage);
 			return jsonResponse;
 		});
-		
-		get("/user/get/:username", (request, response) -> {
+
+		get("/user/get/:userid/:loginService", (request, response) -> {
 			response.type("application/json");
 			JSONObject jsonResponse = new JSONObject();
 			JSONObject jsonResponseMessage = new JSONObject();
 			try {
-				String username = request.params(":username");
+				String userId = request.params(":userid");
+				String loginService = request.params(":loginService");
 
-				User user = userController.get(username);
-				jsonResponseMessage.put("user", gson.toJson(user));
+				User user = getUserController().getByExternalUserId(userId, loginService);
+				jsonResponseMessage.put("user", new JSONObject(gson.toJson(user)));
 
 			} catch (Exception e) {
 				logger.error("Error in request /get", e);
 				jsonResponseMessage.put("user", "null");
+			}
+			jsonResponse.put("response", jsonResponseMessage);
+			return jsonResponse;
+		});
+		
+		get("/user/get/withtoken/:token/:loginService", (request, response) -> {
+			response.type("application/json");
+			JSONObject jsonResponse = new JSONObject();
+			JSONObject jsonResponseMessage = new JSONObject();
+			try {
+				String token = request.params(":userid");
+				String loginService = request.params(":loginService");
+				
+				String userId = getUserId(token, loginService);
+				User user = getUserController().getById(Long.valueOf(userId));
+				jsonResponseMessage.put("user", new JSONObject(gson.toJson(user)));
+
+			} catch (Exception e) {
+				logger.error("Error in request /get", e);
+				jsonResponseMessage.put("user", "null");
+			}
+			jsonResponse.put("response", jsonResponseMessage);
+			return jsonResponse;
+		});
+		
+		post("/user/check", (request, response) -> {
+			response.type("application/json");
+			JSONObject jsonResponse = new JSONObject();
+			JSONObject jsonResponseMessage = new JSONObject();
+			try {
+				JSONObject obj = new JSONObject(request.body());
+				JSONObject jsonRequest = obj.getJSONObject("request");
+				
+				String name = jsonRequest.getString("name");
+				String extUserId = jsonRequest.getString("extUserId");
+				String token = jsonRequest.getString("token");
+				String loginService = jsonRequest.getString("loginService");
+				String client = jsonRequest.getString("client");
+
+				logger.info("check user: " + name + " userId: " + extUserId + " token: " + token + " service " + loginService + " client " + client);
+				
+				if(tokenValidatorFactory.get(loginService, token, extUserId).validate()) {
+					final User user = getUserController().getByExternalUserId(extUserId, loginService);
+					
+					if(user != null) {
+						jsonResponseMessage.put("message", "ok");
+						tokenRegister(user.getId(), extUserId, loginService, token);
+						registerUserTopics(user);
+					}else {
+						User registerUser = getUserController().add(new User(extUserId, loginService, name));
+						tokenRegister(registerUser.getId(), extUserId, loginService, token);
+						jsonResponseMessage.put("message", "firstlogin");
+					}
+				}else {
+					jsonResponseMessage.put("message", "error");
+				}
+
+			} catch (Exception e) {
+				logger.error("Error in request /add", e);
+				jsonResponseMessage.put("message", "error");
 			}
 			jsonResponse.put("response", jsonResponseMessage);
 			return jsonResponse;

@@ -1,100 +1,145 @@
 <div>
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/style.css" rel="stylesheet">
-	
-	<script src="js/jquery-1.12.0.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/angular.min.js"></script>
-	<script src="js/answeme.js"></script>
 	<div class="container-fluid special">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse"
-				data-target="#bs-example-navbar-collapse-1">
-				<span class="sr-only">Toggle navigation</span> <span
-					class="icon-bar"></span> <span class="icon-bar"></span> <span
-					class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" href="#">#Answerme</a>
-		</div>
-		<div class="collapse navbar-collapse"
-			id="bs-example-navbar-collapse-1">
-			<ul class="nav navbar-nav">
-				<li><a href="#"> Me <span class="badge">42</span></a></li>
-				<li><a href="#">About</a></li>
-				<li><a href="#">Trendings topics</a></li>
-				<li><a href="#">Logout</a></li>
+		<nav class="navbar navbar-static-top navbar-dark navbar-inverse" style="background-color: #222222;">
+		  <a class="navbar-brand" href>#Answerme</a>
+		  <ul class="nav navbar-nav">
+				<li><a href ng-click="updateModalShow();" > {{accountHolder.name}} <span class="badge">42</span></a></li>
+				<li><a href data-target="#works-modal" data-toggle="modal" >How it's works</a></li>
+				<li><a href="#">Trendings #Topics</a></li>
+				<li><a ng-href="#/login" >Logout</a></li>
 			</ul>
-			{{accountHolder.userID}}
-		</div>
-
-		<div class="row">
-			<div class="col-md-12">
-				<div class="panel-footer">
-					<div class="row">
-						<div class="col-md-2">
-							<div class="input-group input-group-lg">
-								<span class="input-group-addon" id="sizing-addon1">#</span> <input
-									type="text" class="form-control" placeholder="Topic"
-									aria-describedby="sizing-addon1">
-							</div>
-						</div>
-						<div class="col-md-10">
+		</nav>
+		
+		<div class="container-fluid">
+		  <div class="col-md-8 col-md-offset-2">
+			<div class="panel panel-default">
+			  <div class="panel-body">
+					<div class="row" style="margin-top:50px; margin-bottom:50px;">
+						<div class="col-sm-3">	
 							<div class="input-group">
-								<input id="btn-input" class="form-control input-lg"
-									placeholder="Ask your question here..." type="text"> <span
-									class="input-group-btn">
-									<button class="btn btn-info btn-lg" id="btn-chat">Send</button>
-								</span>
+							  <span class="input-group-addon" id="basic-addon1">#</span>
+							  <input id="topic" type="text" class="form-control" placeholder="Topic" aria-describedby="basic-addon1" ng-keypress="jumpTopic($event);">
+							</div>
+						</div>
+						<div class="col-sm-7">
+							<div class="input-group">
+							  <span class="input-group-addon" id="basic-addon1">Question</span>
+							  <input id="question" type="text" class="form-control" placeholder="" aria-describedby="basic-addon1">
+							</div>
+						</div>
+						<div class="col-sm-2">
+							<div class="input-group" style="padding-right: 5px; padding-left: 5px;">
+								<button type="button" class="btn btn-success btn-md" ng-click="ask();">Ask</button>
 							</div>
 						</div>
 					</div>
-				</div>
+			  </div>
 			</div>
-			<div class="col-md-12">
+			<div id="messageContainer" class="panel panel-default hidden">
+				<div id="messageContainer-body" class="panel-body">
 
-				<div class="chat-panel panel panel-default">
-					<div class="panel-body scrollable ">
-						<ul class="chat">
-							<li ng-repeat="msg in msgs" class="clearfix">
-								<div class="row">
-									<div class="col-md-12">
-										<span class="chat-img pull-left"><img src="{{msg.question.avatar}}" alt="User Avatar" class="img-circle"></span>
-										<div class="loffset1 chat-body clearfix">
-											<div class="loffset1 header">
-												<strong class="primary-font"> </strong> 
-												<span class="label label-warning">#{{msg.question.topic}}</span> 
-												<small class="pull-right text-muted"> 
-													<span class="glyphicon glyphicon-time"></span> 
-													{{msg.question.time}}
-												</small>
-											</div>
-											<p class="loffset1">{{msg.question.text}}</p>
-										</div>
-									</div>
-							
-									<div class="col-md-12 voffset1">
-										<span class="chat-img pull-right"><img src="{{msg.answer.avatar}}" alt="User Avatar" class="img-circle"></span>
-										<div class="chat-body clearfix">
-											<div class="header">
-												<strong class="primary-font"> </strong> 
-												<span>&nbsp;</span> 
-												<small class="pull-left text-muted"> 
-													<span class="glyphicon glyphicon-time"></span> 
-													{{msg.answer.time}}
-												</small>
-											</div>
-											<p>{{msg.answer.text}}</p>
-										</div>
-									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
 				</div>
 			</div>
-			<div class="col-md-12 text-center">
-				All rights reserved (c)
+		  </div>
+		</div>
+	
+		<!-- modal answer -->
+		<div id="answer-modal" class="modal fade" tabindex="-1" role="dialog"> 
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<span class="label label-info">#{{answer.topic}}</span>
+					</div>
+					<div class="modal-body">
+						{{answer.question}}
+						<hr>
+						<h4><p>{{answer.answer}}</p></h4>
+					</div>
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+						<button type="button" class="btn btn-danger" data-toggle="popover"
+							ng-click="directRejectAnswer();"
+							data-placement="bottom" title="Are you sure?" 
+							data-content="If you click this button again the person who answered your question will not receive his points for answer you.">Not OK</button>
+					</div>
+				</div>	
 			</div>
 		</div>
+		<!-- modal -->
+		<!-- modal update -->
+		<div id="update-modal" class="modal fade" tabindex="-1" role="dialog"> 
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2>{{accountHolder.name}}</h2>
+					</div>
+					<div class="modal-body">
+						<h4>Write or remove some topics that you want to answer</h4>
+						<div class="input-group">
+						  <span class="input-group-addon" id="basic-addon1">#</span>
+						  <input id="topics" type="text" class="form-control" placeholder="Cook AmericanHistory Code Dogs Cars ComputerFix" aria-describedby="basic-addon1" ng-keyup="workTopics();">
+						</div>
+						<div class="panel-body">
+							<ul id="readyTopics" class="list-inline" >
+								<li ng-repeat="topic in topics"><span class="label label-{{topic.color}}">#{{topic.text}}</span></li>
+							</ul>
+							<p><a class="btn btn-primary btn-md pull-right" ng-click="apply();" role="button">Apply</a></p>
+						</div>
+						<hr>
+						<h4>Questions</h4>
+						<ul>
+							<li>
+								<span>teste</span>
+								<span>teste2</span>
+							</li>
+							<li>
+								<span>teste</span>
+								<span>teste2</span>
+							</li>
+							<li>
+								<span>teste</span>
+								<span>teste2</span>
+							</li>
+							<li>
+								<span>teste</span>
+								<span>teste2</span>
+							</li>
+
+						</ul>
+						<nav>
+						  <ul class="pager">
+						    <li><a href="#">Previous</a></li>
+						    <li><a href="#">Next</a></li>
+						  </ul>
+						</nav>
+
+					</div>
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+					</div>
+				</div>	
+			</div>
+		</div>
+		<!-- modal -->
+		<!-- modal How its works-->
+		<div id="works-modal" class="modal fade" tabindex="-1" role="dialog"> 
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2>How it's works</h2>
+					</div>
+					<div class="modal-body">
+						Lorem ipsum TODO
+					</div>
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+					</div>
+				</div>	
+			</div>
+		</div>
+		<!-- modal -->
 	</div>
 </div>

@@ -1,12 +1,16 @@
 package com.server.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -20,35 +24,36 @@ public class User implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "user_seq")
 	@Column(name = "id_user", unique = true, insertable = false, updatable = false)
-	private int id;
+	private long id;
+
+	@Column(name = "externaluserid")
+	private String externalUserId;
+
+	@Column(name = "loginservice")
+	private String loginService;
+
 	@Column(name = "firstname")
 	private String firstName;
-	@Column(name = "lastName")
-	private String lastName;
-	@Column(name = "phone")
-	private String phone;
-	@Column(name = "username")
-	private String username;
-	@Column(name = "password")
-	private String password;
+
+	@ManyToMany
+	@JoinTable(name = "user_topic", joinColumns = { @JoinColumn(name = "id_user") }, inverseJoinColumns = { @JoinColumn(name = "id_topic") })
+	private List<Topic> topics;
 
 	public User() {
 	}
 
-	public User(String firstName, String lastName, String phone, String username, String password) {
+	public User(String externalUserId, String loginService, String firstName) {
 		super();
+		this.externalUserId = externalUserId;
+		this.loginService = loginService;
 		this.firstName = firstName;
-		this.lastName = lastName;
-		this.phone = phone;
-		this.username = username;
-		this.password = password;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -60,35 +65,28 @@ public class User implements Serializable {
 		this.firstName = firstName;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public String getLoginService() {
+		return loginService;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setLoginService(String loginService) {
+		this.loginService = loginService;
 	}
 
-	public String getPhone() {
-		return phone;
+	public List<Topic> getTopics() {
+		return topics;
 	}
 
-	public void setPhone(String phone) {
-		this.phone = phone;
+	public void setTopics(List<Topic> topics) {
+		this.topics = topics;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getExternalUserId() {
+		return externalUserId;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setExternalUserId(String externalUserId) {
+		this.externalUserId = externalUserId;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 }

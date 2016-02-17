@@ -1,0 +1,62 @@
+<div>
+	<div class="container-fluid special">
+		<nav class="navbar navbar-static-top navbar-dark navbar-inverse" style="background-color: #222222;">
+		  <a class="navbar-brand" href>#Answerme</a>
+		  <ul class="nav navbar-nav">
+				<li><a href ng-click="updateModalShow();" > {{accountHolder.name}} <span class="badge">42</span></a></li>
+				<li><a href data-target="#works-modal" data-toggle="modal" >How it's works</a></li>
+				<li><a href="#">Trendings #Topics</a></li>
+				<li><a ng-href="#/login" >Logout</a></li>
+			</ul>
+		</nav>
+		
+		<div class="container" style="margin-top:10%">
+		  <div class="col-md-8 col-md-offset-2">
+			<div class="panel panel-default">
+			  <div class="panel-body">
+					<div class="jumbotron">
+					  <h1>#{{question.topic}}</h1>
+					  <p>{{question.question}}</p>
+					  {{topic}}
+					  <div class="row" >
+						<div class="col-sm-6">	
+							<p><a class="btn btn-primary btn-lg" id="bt-answer" role="button" ng-click="accept();">Answer</a></p>
+						</div>
+
+						<div class="col-sm-6">	
+							<p><a class="btn btn-danger btn-lg" id="bt-ignore" ng-click="goHome();" role="button">Ignore</a></p>
+						</div>
+						</div>
+					</div>
+					<div id="answer" class="ng-hide">
+						<div class="row" >
+							<div class="col-sm-12">	
+								<div class="form-group">
+									<label for="comment">Answer:</label>
+									<textarea id="answer-text"class="form-control" rows="5" id="comment"></textarea>
+								</div>
+							</div>
+
+							<div class="col-sm-12">	
+								<div class="form-group">
+									<a class="btn btn-info btn-lg" ng-click="answer();" role="button">Answer</a>
+								</div>
+							</div>
+
+							<div class="col-sm-12">	
+								<div class="form-group">
+									<div class="clock">
+										<span class="glyphicon glyphicon-time"></span> {{counter}} minutes to answer
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+			  </div>
+			</div>
+		  </div>
+		</div>
+		</div>
+	</div>
