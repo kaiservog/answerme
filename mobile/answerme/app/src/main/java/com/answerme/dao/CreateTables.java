@@ -11,7 +11,7 @@ import com.answerme.dao.UserDAO;
 public class CreateTables {
 
     private SQLiteDatabase db;
-    private UserDAO userDAO;
+
 
     /**
      * Cria banco de dados na memoria do aparelho e
@@ -21,7 +21,7 @@ public class CreateTables {
     public void create(Context context) {
         db = context.openOrCreateDatabase("answerme.db", SQLiteDatabase.CREATE_IF_NECESSARY, null);
 
-        userDAO.createTable(db, "user");
+        UserDAO.createTable(db, "user");
     }
 
     /**

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply plugin: 'com.google.gms.google-services'
 
 buildscript {
     repositories {
@@ -13,7 +14,6 @@ buildscript {
 apt {
     arguments {
         androidManifestFile variant.outputs[0].processResources.manifestFile
-        resourcePackageName 'com.example.package.name'
     }
 }
 
@@ -35,13 +35,20 @@ android {
             proguardFiles getDefaultProguardFile( 'proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
     compile fileTree(dir : 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     apt 'org.androidannotations:androidannotations:3.+'
     compile 'org.androidannotations:androidannotations-api:3.+'
     compile 'com.nispok:snackbar:2.6.1'
+    compile 'com.j256.ormlite:ormlite-core:4.48'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'com.google.android.gms:play-services:8.1.0'
 }
+
+

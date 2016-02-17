@@ -1,16 +1,26 @@
 package com.answerme.model;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 /**
- * Created by Toscano on 23/01/2016.
+ * Created by rctoscano on 23/01/2016.
  */
+
+@DatabaseTable(tableName = "user")
 public class User {
 
+    @DatabaseField(generatedId = true)
     private int id;
+    @DatabaseField
     private String email;
+    @DatabaseField
     private String password;
 
 
+    public User(){
 
+    }
 
     public int getId() {
         return id;

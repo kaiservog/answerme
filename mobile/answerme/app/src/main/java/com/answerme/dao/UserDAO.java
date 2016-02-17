@@ -18,7 +18,7 @@ public class UserDAO {
         db = context.openOrCreateDatabase("answerme.db", SQLiteDatabase.CREATE_IF_NECESSARY, null);
     }
 
-    public void createTable(SQLiteDatabase dataBase, String tableName){
+    public static void createTable(SQLiteDatabase dataBase, String tableName){
         try{
             dataBase.beginTransaction();
 
