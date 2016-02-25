@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.answerme.dao.*;
 import com.answerme.model.User;
 
+import com.answerme.service.BackendAccessService;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -89,6 +90,9 @@ public class Login extends Activity implements View.OnClickListener,
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
 
+        Log.i("backend", "passou aqui");
+        Intent backendAccessIntent = new Intent(Login.this, BackendAccessService.class);
+        startService(backendAccessIntent);
         init();
     }
 
